@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs and heavy experiment data
+raw_logs/**
+processed_tables/**
+archive/**
+*.zip
+*.7z
+
+# Keep directory placeholders
+!raw_logs/.gitkeep
+!processed_tables/.gitkeep
+!archive/.gitkeep
+
+# Temporary files
+*.tmp
+*.bak
+~$*
+.DS_Store
+Thumbs.db
+
+# TIA Portal large/local artifacts
+*.ap*
+*.zap*
+*.al*

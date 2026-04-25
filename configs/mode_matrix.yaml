@@ -1,0 +1,43 @@
+# Матрица режимов испытаний ВКР
+# Файл будет уточняться после подготовки PLC, VPLC и контура логирования.
+
+modes:
+  - mode_id: M01
+    object: HW_PLC
+    scenario: IDLE
+    t0_ms: 20
+    load_level: LOW
+    stress_flag: BASELINE
+    duration_s: 600
+    series_count: 3
+    status: PLANNED
+
+  - mode_id: M02
+    object: VPLC
+    scenario: IDLE
+    t0_ms: 20
+    load_level: LOW
+    stress_flag: BASELINE
+    duration_s: 600
+    series_count: 3
+    status: PLANNED
+
+  - mode_id: M03
+    object: HW_PLC
+    scenario: BOOL_LOAD
+    t0_ms: 20
+    load_level: MID
+    stress_flag: BASELINE
+    duration_s: 600
+    series_count: 3
+    status: PLANNED
+
+  - mode_id: M04
+    object: VPLC
+    scenario: BOOL_LOAD
+    t0_ms: 20
+    load_level: MID
+    stress_flag: BASELINE
+    duration_s: 600
+    series_count: 3
+    status: PLANNED

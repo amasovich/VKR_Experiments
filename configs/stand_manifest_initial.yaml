@@ -190,8 +190,38 @@ software_state:
       architecture: amd64
       graph_root: "/home/vkr/.local/share/containers/storage"
       mode_observed: rootless_user_storage
-    masc_vplc: not_installed_yet
-    masc_vplc_server: not_installed_yet
+    masc_vplc: installed_cli_verified
+    masc_vplc_version: "2.10.0"
+    masc_vplc_path: "/usr/local/bin/vplc"
+    masc_vplc_server: installed_cli_verified
+    masc_vplc_server_version: "2.7.0"
+    masc_vplc_server_path: "/usr/local/bin/vplc-server"
+    masc_vplc_installation:
+      method: "local .deb packages downloaded from updates.max-automation.ru"
+      install_dir_on_host: "/home/vkr/vplc_install_2026-04-25"
+      architecture: amd64
+      packages:
+        vplc:
+          file: "vplc_latest_amd64.deb"
+          size: "682K"
+          sha256: "5e003f339fd280bac7fe915801f4ad8eca2b5e66b37de6d665408a9fd06e8fc3"
+        vplc_server:
+          file: "vplc-server_latest_amd64.deb"
+          size: "1.3M"
+          sha256: "a0bf7348beeb9af4943680e61a92f686b77c41a92d158b8730f3173d4b6e0e0d"
+    masc_vplc_cli_check:
+      status: passed
+      artifact: "vplc\\masc_vplc\\cli_check_2026-04-25.md"
+      checked_commands:
+        - "dpkg -l | grep -E 'vplc|vplc-server'"
+        - "which vplc"
+        - "which vplc-server"
+        - "vplc help"
+        - "vplc-server help"
+        - "vplc config"
+        - "vplc status"
+      observed_vplc_ip: "192.168.31.109"
+      observed_vplc_ip_note: "Wi-Fi address during temporary package installation; must be rechecked with Wi-Fi disabled before measurements."
     stress_tools: not_installed_yet
   eng_node:
     vscode_workspace: prepared
@@ -262,6 +292,25 @@ configuration_snapshots:
       - routes
       - running_services
       - selected_container_package_versions
+  vplc_host_after_vplc_cli:
+    path: "configs\\vplc_host_config_snapshot_2026-04-25_after_vplc_cli.txt"
+    collected_at: "2026-04-25T14:14:17+00:00"
+    collection_method: "ssh from ENG_NODE to VPLC_HOST"
+    status: collected
+    encoding_note: "Russian CLI output repaired to UTF-8 after initial PowerShell redirection mojibake"
+    includes:
+      - date
+      - hostnamectl
+      - uname
+      - selected_package_versions
+      - vplc_paths
+      - vplc_config
+      - vplc_status
+      - vplc_server_help
+      - ip_addresses
+      - routes
+      - listening_ports
+      - running_services
 
 stage_4_0_status:
   "1_create_workspace": done
@@ -272,7 +321,7 @@ stage_4_0_status:
   "6_install_ssh_and_base_utilities": done
   "7_collect_first_config_snapshot": done
   "8_install_podman": done
-  "9_check_vplc_linux_cli": not_started
+  "9_check_vplc_linux_cli": done_bare_metal_cli_verified
   "10_create_podman_launch_profile": not_started
   "11_create_minimal_vplc_test_project": not_started
   "12_create_minimal_s7_1200_test_project": not_started

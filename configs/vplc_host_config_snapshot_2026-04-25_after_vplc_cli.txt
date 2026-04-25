@@ -1,0 +1,173 @@
+﻿2026-04-25T14:14:17+00:00
+ Static hostname: vplc-host
+       Icon name: computer-laptop
+         Chassis: laptop
+      Machine ID: 0433f805fa00456d8199659a963ff7f8
+         Boot ID: a7cd0fa0e58f41a4b5326b4e838d15ec
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-119-generic
+    Architecture: x86-64
+Linux vplc-host 5.15.0-119-generic #129-Ubuntu SMP Fri Aug 2 19:25:20 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+ii  conmon                                           2.0.25+ds1-1.1                                   amd64        OCI container runtime monitor
+ii  crun                                             0.17+dfsg-1.1ubuntu0.1                           amd64        lightweight OCI runtime for running containers
+ii  podman                                           3.4.4+ds1-1ubuntu1.22.04.3                       amd64        engine to run OCI-based containers in Pods
+ii  slirp4netns                                      1.0.1-2                                          amd64        User-mode networking for unprivileged network namespaces
+ii  vplc                                             2.10.0                                           amd64        VPLC supervisor service
+ii  vplc-server                                      2.7.0                                            amd64        VPLC Server supervisor service
+/usr/local/bin/vplc
+/usr/local/bin/vplc-server
+
+ __   _____ _    ___
+ \ \ / / _ \ |  / __|
+  \ V /|  _/ |_| (__
+   \_/ |_| |____\___|
+ Версия: 2.10.0
+
+
+ВПЛК, текущая конфигурация
+===========================================
+Версия..............................: 2.10.0
+IP..................................: 192.168.31.109
+Порт................................: 1234
+Название............................: vplc-1
+Время непрерывной работы............: 0 д. 0 ч. 21 м.
+Программа...........................: остановлена
+При запросе значений, отправляются..: только измененные
+Автосохранение дампа................: выключено
+Путь автосохранения дампов..........: 
+
+Облачный хаб........................: отключен
+URL облачного хаба..................: vplc-cloud.max-automation.ru:7070
+Токен...............................: 1111-1111-1111-1111
+Активных локальных соединений.......: 0
+Активных облачных соединений........: 0
+
+
+
+ __   _____ _    ___
+ \ \ / / _ \ |  / __|
+  \ V /|  _/ |_| (__
+   \_/ |_| |____\___|
+ Версия: 2.10.0
+
+
+ВПЛК, текущий статус
+======================================================
+Версия.................................: 2.10.0
+Время непрерывной работы...............: "0 д. 0 ч. 21 м."
+Активных локальных соединений..........: 0
+Активных облачных соединений...........: 0
+Программа..............................: остановлена
+Название программы.....................: 
+Версия программы.......................: 
+Версия IDE сборки программы............: 
+Дата сборки программы..................: 
+Размер программы.......................: 0
+Автосохранение состояния...............: выключено
+Длительность цикла (ms)................: 0.000/0
+Количество тегов.......................: 0
+Количество Modbus устройств............: 0
+Память, всего (Гб).....................: 11.43
+Память, свободно (Гб)..................: 10.90
+Диск, всего (Гб).......................: 467.35
+Диск, свободно (Гб)....................: 435.99
+
+
+
+ __   _____ _    ___    ___ ___ _____   _____ ___
+ \ \ / / _ \ |  / __|__/ __| __| _ \ \ / / __| _ \
+  \ V /|  _/ |_| (_|___\__ \ _||   /\ V /| _||   /
+   \_/ |_| |____\___|  |___/___|_|_\ \_/ |___|_|_\
+ Версия: 2.7.0
+
+
+
+Команды управления ВПЛК Сервер:
+    vplc-server <команда> [параметры]
+
+Команды
+    help                                                        Показать справку по командам
+    status                                                      Показать текущий статус ВПЛК Сервер
+    start                                                       Запустить ВПЛК Сервер
+    stop                                                        Остановить ВПЛК Сервер
+    config                                                      Показать текущую конфигурацию
+    update                                                      Проверить обновление
+    exit                                                        Завершить работу ВПЛК Сервер
+
+Конфигурация:
+    set --port <port>                                           Установить порта OPC UA
+    set --cloud <enabled|disabled>                              Включить или отключить облачный хаб
+    set --cloud-url <url:port>                                  Установить адрес облачного хаба
+    set --update-period <ms>                                    Установить период запроса новых значений (мс)
+    set --log-changed-values <enabled|disabled>                 Включить или отключить логирование изменения значений
+    set --logged-tags <tag1 tag2 ...>                           Установить список тегов для логирования полученных значений
+
+    vplc --cloud-list <token>                                   Показать список облачных ВПЛК
+    vplc --add-local <ip:port>                                  Добавить локальный ВПЛК
+    vplc --add-cloud <token> <name>                             Добавить облачный ВПЛК
+    vplc --delete <name>                                        Удалить ВПЛК
+    vplc --activate <name>                                      Активировать ВПЛК
+    vplc --deactivate <name>                                    Деактивировать ВПЛК
+
+Управление ВПЛК:
+    vplc --start <name1 name2 ...>                              Запустить программу ВПЛК
+    vplc --stop <name1 name2 ...>                               Остановить программу ВПЛК
+    vplc --reset-time <name1 name2 ...>                         Сбросить время старта ВПЛК
+    vplc --download-log <"path to folder" name1 name2 ...>      Загрузить логи с ВПЛК
+    vplc --download-dump <"path to folder" name1 name2 ...>     Загрузить дампы с ВПЛК
+    vplc --check-update <name1 name2 ...>                       Проверить и загрузить обновление ВПЛК
+    vplc --update <name1 name2 ...>                             Обновить ВПЛК
+
+
+
+
+
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           DOWN           
+enp2s0           UP             192.168.10.20/24 fe80::e251:d8ff:fe18:5a66/64 
+wlo1             UP             192.168.31.109/24 metric 600 fe80::4a68:4aff:fe25:8f0a/64 
+default via 192.168.31.1 dev wlo1 proto dhcp src 192.168.31.109 metric 600 
+192.168.10.0/24 dev enp2s0 proto kernel scope link src 192.168.10.20 
+192.168.31.0/24 dev wlo1 proto kernel scope link src 192.168.31.109 metric 600 
+192.168.31.1 dev wlo1 proto dhcp scope link src 192.168.31.109 metric 600 
+Netid State  Recv-Q Send-Q                    Local Address:Port Peer Address:PortProcess
+udp   UNCONN 0      0                         127.0.0.53%lo:53        0.0.0.0:*          
+udp   UNCONN 0      0                   192.168.31.109%wlo1:68        0.0.0.0:*          
+udp   UNCONN 0      0      [fe80::4a68:4aff:fe25:8f0a]%wlo1:546          [::]:*          
+tcp   LISTEN 0      128                             0.0.0.0:22        0.0.0.0:*          
+tcp   LISTEN 0      4096                            0.0.0.0:1234      0.0.0.0:*          
+tcp   LISTEN 0      4096                      127.0.0.53%lo:53        0.0.0.0:*          
+tcp   LISTEN 0      128                                [::]:22           [::]:*          
+  UNIT                        LOAD   ACTIVE SUB     DESCRIPTION
+  cron.service                loaded active running Regular background program processing daemon
+  dbus.service                loaded active running D-Bus System Message Bus
+  getty@tty1.service          loaded active running Getty on tty1
+  irqbalance.service          loaded active running irqbalance daemon
+  ModemManager.service        loaded active running Modem Manager
+  multipathd.service          loaded active running Device-Mapper Multipath Device Controller
+  netplan-wpa-wlo1.service    loaded active running WPA supplicant for netplan wlo1
+  networkd-dispatcher.service loaded active running Dispatcher daemon for systemd-networkd
+  packagekit.service          loaded active running PackageKit Daemon
+  polkit.service              loaded active running Authorization Manager
+  rsyslog.service             loaded active running System Logging Service
+  snapd.service               loaded active running Snap Daemon
+  ssh.service                 loaded active running OpenBSD Secure Shell server
+  systemd-hostnamed.service   loaded active running Hostname Service
+  systemd-journald.service    loaded active running Journal Service
+  systemd-logind.service      loaded active running User Login Management
+  systemd-networkd.service    loaded active running Network Configuration
+  systemd-resolved.service    loaded active running Network Name Resolution
+  systemd-timesyncd.service   loaded active running Network Time Synchronization
+  systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files
+  thermald.service            loaded active running Thermal Daemon Service
+  udisks2.service             loaded active running Disk Manager
+  unattended-upgrades.service loaded active running Unattended Upgrades Shutdown
+  user@1000.service           loaded active running User Manager for UID 1000
+  vplc-server.service         loaded active running VPLC Server supervisor service
+  vplc.service                loaded active running VPLC supervisor service
+  wpa_supplicant.service      loaded active running WPA supplicant
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+27 loaded units listed.

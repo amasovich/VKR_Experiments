@@ -1,0 +1,186 @@
+manifest_id: ManifestCfg_Stand_Initial
+stand_id: VKR_STAND_01
+manifest_type: initial_pre_software_installation
+status: draft_initial
+created_at: 2026-04-25
+workspace_path_windows: "D:\\HOME_BASE\\VKR_Experiments"
+
+purpose: >
+  Initial configuration snapshot of the experimental stand before software
+  installation and before experimental runs. Unknown factual parameters are
+  explicitly marked as TBD or not_installed_yet and must be updated after
+  first boot and configuration checks.
+
+thesis_context:
+  title: "Методика оценки детерминизма и стабильности цикла управления виртуальных программируемых логических контроллеров в контейнерной среде в сравнении с аппаратными контроллерами"
+  latest_draft: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\МИФИ_ВКР_2026_Березняк_В_Н_v5.docx"
+  stage_plan: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\04 - Этап 4\\Этап 4.0. Подготовка экспериментальной реализации стенда..md"
+  stage: "Этап 4.0. Подготовка экспериментальной реализации стенда"
+
+nodes:
+  hw_plc:
+    node_id: HW_PLC
+    role: аппаратный эталонный PLC
+    vendor: Siemens
+    family: SIMATIC S7-1200
+    model: "CPU 1215C DC/DC/relay"
+    order_number: "6ES7 215-1HG40-0XB0"
+    power_supply: "24 V DC"
+    program_memory: "200 KB"
+    network_interface: "PROFINET, 2 x RJ45"
+    firmware_version: TBD
+    serial_number: TBD
+    project_status: not_created_yet
+    planned_ip: "192.168.10.10"
+    planned_netmask: "255.255.255.0"
+    planned_gateway: none
+
+  vplc_host:
+    node_id: VPLC_HOST
+    role: узел исполнения MASC/VPLC и контейнерного профиля запуска
+    model: "MLLSE G2 Pro"
+    cpu: "Intel Processor N150"
+    cpu_cores_threads: "4 cores / 4 threads"
+    ram: "12 GB"
+    storage: "SSD M.2 512 GB"
+    architecture: "x86_64 / amd64"
+    bios_uefi_version: TBD
+    serial_number: TBD
+    planned_os: "Ubuntu 22.04 LTS x86_64"
+    os_status: not_installed_yet
+    kernel_version: not_available_yet
+    preempt_rt_status: not_checked_yet
+    planned_ip: "192.168.10.20"
+    planned_netmask: "255.255.255.0"
+    planned_gateway: none
+    linux_interface_name: TBD
+    mac_address: TBD
+
+  eng_node:
+    node_id: ENG_NODE
+    role: инженерно-метрологическая нода
+    platform: "Windows workstation"
+    functions:
+      - TIA Portal
+      - VPLC Studio
+      - VS Code
+      - script_development
+      - artifact_archiving
+      - offline_processing
+    os_version: TBD
+    tia_portal_version: TBD
+    vplc_studio_version: TBD
+    python_version: TBD
+    workspace_path: "D:\\HOME_BASE\\VKR_Experiments"
+    planned_ip: "192.168.10.30"
+    planned_netmask: "255.255.255.0"
+    planned_gateway: none
+
+  sw_net:
+    node_id: SW_NET
+    role: локальный Ethernet-коммутатор стенда
+    model: TBD
+    type: unmanaged_switch
+    port_count: 5
+    speed: TBD
+
+  psu_24v:
+    node_id: PSU_24V
+    role: питание аппаратного PLC
+    output_voltage: "24 V DC"
+    model: TBD
+    current_rating: TBD
+
+network:
+  segment: "192.168.10.0/24"
+  addressing: static_planned
+  dhcp: false
+  internet_during_measurements: false
+  vlan_or_l3_routing: false
+  cloudhub_during_baseline: false
+  planned_links:
+    - from: ENG_NODE
+      to: SW_NET
+      medium: Ethernet
+      purpose: engineering_access_and_artifact_collection
+    - from: HW_PLC
+      to: SW_NET
+      medium: Ethernet_PROFINET
+      purpose: tia_portal_access_and_test_data_exchange
+    - from: VPLC_HOST
+      to: SW_NET
+      medium: Ethernet
+      purpose: ssh_podman_vplc_logs
+    - from: PSU_24V
+      to: HW_PLC
+      medium: power_wiring
+      purpose: plc_power_supply
+
+software_state:
+  vplc_host:
+    ubuntu_22_04_lts: not_installed_yet
+    ssh_server: not_installed_yet
+    base_utilities: not_installed_yet
+    podman: not_installed_yet
+    masc_vplc: not_installed_yet
+    masc_vplc_server: not_installed_yet
+    stress_tools: not_installed_yet
+  eng_node:
+    vscode_workspace: prepared
+    tia_portal: TBD
+    vplc_studio: TBD
+    python_environment: prepared_local_venv
+
+planned_container_profile:
+  runtime: Podman
+  runtime_status: not_installed_yet
+  execution_model: rootful_planned
+  network_mode: host_planned
+  restart_policy: systemd_unit_planned
+  mounts:
+    config: "/srv/vplc/config"
+    data: "/srv/vplc/data"
+    log: "/srv/vplc/log"
+  cpuset: TBD_after_first_boot
+  cpu_rt_runtime: TBD_after_host_capability_check
+
+artifact_structure:
+  root: "D:\\HOME_BASE\\VKR_Experiments"
+  docs: "00_docs"
+  configs: "configs"
+  scripts_windows: "scripts\\windows"
+  scripts_python: "scripts\\python"
+  scripts_linux: "scripts\\linux"
+  plc_materials: "plc\\siemens_s7_1200"
+  vplc_materials: "vplc\\masc_vplc"
+  raw_logs: "raw_logs"
+  processed_tables: "processed_tables"
+  summary_cards: "summary_cards"
+  event_journal: "event_journal\\event_journal.csv"
+  archive: "archive"
+
+stage_4_0_status:
+  "1_create_workspace": done
+  "2_initial_manifest": done_draft
+  "3_install_ubuntu_on_mini_pc": not_started
+  "4_configure_static_ip": not_started
+  "5_check_connectivity": not_started
+  "6_install_ssh_and_base_utilities": not_started
+  "7_collect_first_config_snapshot": not_started
+  "8_install_podman": not_started
+  "9_check_vplc_linux_cli": not_started
+  "10_create_podman_launch_profile": not_started
+  "11_create_minimal_vplc_test_project": not_started
+  "12_create_minimal_s7_1200_test_project": not_started
+  "13_first_short_run": not_started
+  "14_check_raw_logs_collection": not_started
+  "15_first_process_logs_py": not_started
+  "16_trial_runs": not_started
+  "17_baseline_stress_series": not_started
+  "18_chapter_4_artifacts": not_started
+
+traceability_notes:
+  - "No experimental data are recorded in this manifest."
+  - "No KPI values, logs, charts, or conclusions are generated at this stage."
+  - "All TBD fields must be replaced only after factual inspection of the stand."
+  - "This manifest is the baseline reference before OS and vPLC software installation."

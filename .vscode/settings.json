@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.formatOnSave": false,
+  "markdown.preview.breaks": true,
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
+}

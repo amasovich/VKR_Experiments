@@ -18,6 +18,9 @@ archive/**
 # Temporary files
 *.tmp
 *.bak
+*.vplc-backup
+*.vplc-shm
+*.vplc-wal
 ~$*
 .DS_Store
 Thumbs.db

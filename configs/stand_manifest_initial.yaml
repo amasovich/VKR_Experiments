@@ -1,8 +1,9 @@
 manifest_id: ManifestCfg_Stand_Initial
 stand_id: VKR_STAND_01
 manifest_type: initial_pre_software_installation
-status: draft_initial
+status: draft_initial_updated_after_os_install
 created_at: 2026-04-25
+last_updated_at: 2026-04-25
 workspace_path_windows: "D:\\HOME_BASE\\VKR_Experiments"
 
 purpose: >
@@ -31,6 +32,7 @@ nodes:
     firmware_version: TBD
     serial_number: TBD
     project_status: not_created_yet
+    ip_assignment_status: postponed_until_tia_portal_installation
     planned_ip: "192.168.10.10"
     planned_netmask: "255.255.255.0"
     planned_gateway: none
@@ -47,14 +49,28 @@ nodes:
     bios_uefi_version: TBD
     serial_number: TBD
     planned_os: "Ubuntu 22.04 LTS x86_64"
-    os_status: not_installed_yet
-    kernel_version: not_available_yet
+    os_status: installed_reported_by_operator
+    actual_os: "Ubuntu 22.04.5 LTS"
+    kernel_version: "5.15.0-119-generic"
     preempt_rt_status: not_checked_yet
+    network_adapters_reported:
+      - integrated_wifi
+      - integrated_ethernet_port_1
+      - integrated_ethernet_port_2
     planned_ip: "192.168.10.20"
     planned_netmask: "255.255.255.0"
     planned_gateway: none
-    linux_interface_name: TBD
-    mac_address: TBD
+    stand_linux_interface_name: enp2s0
+    stand_linux_interface_mac: "e0:51:d8:18:5a:66"
+    secondary_ethernet_interface_name: enp1s0
+    secondary_ethernet_interface_mac: "e0:51:d8:18:5a:65"
+    wifi_interface_name: wlo1
+    wifi_interface_mac: "48:68:4a:25:8f:0a"
+    temporary_wifi_ip: "192.168.31.109/24"
+    temporary_wifi_gateway: "192.168.31.1"
+    temporary_wifi_purpose: package_installation_only
+    linux_interface_name: enp2s0
+    mac_address: "e0:51:d8:18:5a:66"
 
   eng_node:
     node_id: ENG_NODE
@@ -72,6 +88,7 @@ nodes:
     vplc_studio_version: TBD
     python_version: TBD
     workspace_path: "D:\\HOME_BASE\\VKR_Experiments"
+    stand_network_adapter_reported: "Ethernet 2 - Realtek USB GbE Family Controller"
     planned_ip: "192.168.10.30"
     planned_netmask: "255.255.255.0"
     planned_gateway: none
@@ -93,11 +110,42 @@ nodes:
 
 network:
   segment: "192.168.10.0/24"
-  addressing: static_planned
+  addressing: static_configured_for_eng_node_and_vplc_host
   dhcp: false
   internet_during_measurements: false
   vlan_or_l3_routing: false
   cloudhub_during_baseline: false
+  internet_on_stand_segment_reported: false
+  temporary_internet_access:
+    enabled: true
+    interface: wlo1
+    ip: "192.168.31.109/24"
+    gateway: "192.168.31.1"
+    purpose: "temporary package installation and updates only"
+    measurement_policy: disabled_during_experimental_runs
+  physical_connection_status:
+    eng_node_to_switch: connected_reported
+    vplc_host_to_switch: connected_reported
+    hw_plc_to_switch: TBD
+  connectivity_status: eng_node_vplc_host_verified
+  hw_plc_connectivity_status: postponed_until_tia_portal_installation
+  verified_links:
+    - link: "VPLC_HOST -> ENG_NODE"
+      command: "ping -c 4 192.168.10.30"
+      result: "4 packets transmitted, 4 received, 0% packet loss"
+      note: "Проверено с VPLC_HOST после настройки enp2s0 = 192.168.10.20/24"
+    - link: "ENG_NODE -> VPLC_HOST"
+      command: "ping 192.168.10.20"
+      result: "4 packets sent, 4 received, 0% packet loss; min/avg/max approx. 1/1/2 ms"
+      note: "Проверено с ENG_NODE через адаптер Ethernet 2 - Realtek USB GbE Family Controller"
+    - link: "ENG_NODE -> VPLC_HOST SSH"
+      command: "ssh vkr@192.168.10.20"
+      result: "SSH login successful; ED25519 host key accepted and stored in known_hosts"
+      note: "OpenSSH server active on VPLC_HOST, port 22 listens on IPv4 and IPv6"
+    - link: "VPLC_HOST -> Internet via Wi-Fi"
+      command: "ping -c 4 8.8.8.8; ping -c 4 archive.ubuntu.com"
+      result: "Both checks returned 4 transmitted, 4 received, 0% packet loss"
+      note: "Temporary Wi-Fi route via 192.168.31.1; high RTT acceptable for package installation, not for measurements"
   planned_links:
     - from: ENG_NODE
       to: SW_NET
@@ -118,9 +166,18 @@ network:
 
 software_state:
   vplc_host:
-    ubuntu_22_04_lts: not_installed_yet
-    ssh_server: not_installed_yet
-    base_utilities: not_installed_yet
+    ubuntu_22_04_lts: installed_reported_by_operator
+    ssh_server: installed_enabled_running_verified
+    base_utilities: installed_verified
+    base_utilities_versions:
+      curl: "7.81.0"
+      wget: "1.21.2"
+      git: "2.34.1"
+      htop: "3.0.5"
+      sysstat: "12.5.2"
+      net_tools: "2.10-alpha"
+      ethtool: "5.16"
+      lshw: installed_verified
     podman: not_installed_yet
     masc_vplc: not_installed_yet
     masc_vplc_server: not_installed_yet
@@ -159,14 +216,33 @@ artifact_structure:
   event_journal: "event_journal\\event_journal.csv"
   archive: "archive"
 
+configuration_snapshots:
+  vplc_host_initial:
+    path: "configs\\vplc_host_config_snapshot_2026-04-25_initial.txt"
+    collected_at: "2026-04-25T13:29:45+00:00"
+    collection_method: "ssh from ENG_NODE to VPLC_HOST"
+    status: collected
+    includes:
+      - date
+      - hostnamectl
+      - uname
+      - lscpu
+      - memory
+      - block_devices
+      - ip_addresses
+      - routes
+      - listening_ports
+      - running_services
+      - selected_package_versions
+
 stage_4_0_status:
   "1_create_workspace": done
   "2_initial_manifest": done_draft
-  "3_install_ubuntu_on_mini_pc": not_started
-  "4_configure_static_ip": not_started
-  "5_check_connectivity": not_started
-  "6_install_ssh_and_base_utilities": not_started
-  "7_collect_first_config_snapshot": not_started
+  "3_install_ubuntu_on_mini_pc": done_reported_by_operator
+  "4_configure_static_ip": done_for_vplc_host_enp2s0
+  "5_check_connectivity": eng_node_vplc_host_verified_hw_plc_postponed
+  "6_install_ssh_and_base_utilities": done
+  "7_collect_first_config_snapshot": done
   "8_install_podman": not_started
   "9_check_vplc_linux_cli": not_started
   "10_create_podman_launch_profile": not_started

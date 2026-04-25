@@ -178,7 +178,18 @@ software_state:
       net_tools: "2.10-alpha"
       ethtool: "5.16"
       lshw: installed_verified
-    podman: not_installed_yet
+    podman: installed_verified
+    podman_version: "3.4.4"
+    podman_initial_test:
+      command: "podman run --rm hello-world"
+      result: passed
+      image_source: "docker.io/library/hello-world:latest"
+      pulled_architecture: amd64
+    podman_info_summary:
+      oci_runtime: crun
+      architecture: amd64
+      graph_root: "/home/vkr/.local/share/containers/storage"
+      mode_observed: rootless_user_storage
     masc_vplc: not_installed_yet
     masc_vplc_server: not_installed_yet
     stress_tools: not_installed_yet
@@ -190,8 +201,8 @@ software_state:
 
 planned_container_profile:
   runtime: Podman
-  runtime_status: not_installed_yet
-  execution_model: rootful_planned
+  runtime_status: installed_verified
+  execution_model: rootless_verified_for_initial_smoke_test_rootful_still_to_be_decided
   network_mode: host_planned
   restart_policy: systemd_unit_planned
   mounts:
@@ -234,6 +245,23 @@ configuration_snapshots:
       - listening_ports
       - running_services
       - selected_package_versions
+  vplc_host_after_podman:
+    path: "configs\\vplc_host_config_snapshot_2026-04-25_after_podman.txt"
+    collected_at: "2026-04-25T13:41:30+00:00"
+    collection_method: "ssh from ENG_NODE to VPLC_HOST"
+    status: collected
+    includes:
+      - date
+      - hostnamectl
+      - uname
+      - podman_version
+      - podman_info
+      - podman_images
+      - podman_containers
+      - ip_addresses
+      - routes
+      - running_services
+      - selected_container_package_versions
 
 stage_4_0_status:
   "1_create_workspace": done
@@ -243,7 +271,7 @@ stage_4_0_status:
   "5_check_connectivity": eng_node_vplc_host_verified_hw_plc_postponed
   "6_install_ssh_and_base_utilities": done
   "7_collect_first_config_snapshot": done
-  "8_install_podman": not_started
+  "8_install_podman": done
   "9_check_vplc_linux_cli": not_started
   "10_create_podman_launch_profile": not_started
   "11_create_minimal_vplc_test_project": not_started

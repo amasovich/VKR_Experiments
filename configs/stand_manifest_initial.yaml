@@ -440,15 +440,15 @@ stage_4_0_status:
   "8_install_podman": done
   "9_check_vplc_linux_cli": done_bare_metal_cli_verified
   "10_verify_vplc_studio_bare_metal_workflow": done_minimal_project_running
-  "11_create_podman_launch_profile": not_started
-  "12_create_minimal_vplc_test_project": not_started
-  "13_create_minimal_s7_1200_test_project": minimal_project_created_loaded_run_observed_ob1_logic_not_documented
-  "14_first_short_run": not_started
-  "15_check_raw_logs_collection": not_started
-  "16_first_process_logs_py": not_started
-  "17_trial_runs": not_started
-  "18_baseline_stress_series": not_started
-  "19_chapter_4_artifacts": not_started
+  "11_create_podman_launch_profile": not_started_return_to_this_step_next
+  "12_create_minimal_s7_1200_test_project": partially_done_hw_config_loaded_run_verified_tia_export_pending
+  "13_first_short_run": blocked_until_steps_11_and_12_closed
+  "14_check_raw_logs_collection": not_started
+  "15_first_process_logs_py": not_started
+  "16_trial_runs": not_started
+  "17_baseline_stress_series": not_started
+  "18_chapter_4_artifacts": not_started
+  execution_gate: "Do not proceed to step 13 until step 11 is implemented or explicitly waived, and step 12 is formally closed."
 
 traceability_notes:
   - "No experimental data are recorded in this manifest."

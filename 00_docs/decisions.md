@@ -14,6 +14,34 @@ D:\HOME_BASE\VKR_Experiments
 
 Статус: принято.
 
+## DEC-004. Постоянная сетeвая конфигурация VPLC_HOST
+
+Решение: отключить генерацию сетевой конфигурации cloud-init на `VPLC_HOST` и использовать отдельный постоянный netplan-файл для стендового интерфейса.
+
+Фактическая конфигурация:
+
+```text
+/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+network: {config: disabled}
+
+/etc/netplan/01-vkr-stand.yaml
+enp2s0: 192.168.10.20/24
+renderer: networkd
+```
+
+Обоснование:
+- после перезагрузки `50-cloud-init.yaml` оказался перезаписан в пустую конфигурацию `ethernets: {}` / `wifis: {}`;
+- из-за этого `enp2s0` поднимался без IPv4-адреса и SSH на `192.168.10.20` становился недоступен;
+- отдельный netplan-файл `01-vkr-stand.yaml` и отключение cloud-init network config делают адрес `192.168.10.20/24` устойчивым после reboot.
+
+Проверка:
+- `systemd-networkd` active/enabled;
+- `networkctl status enp2s0`: `routable (configured)`;
+- после перезагрузки `VPLC_HOST` адрес `192.168.10.20/24` сохранился;
+- SSH-доступ с `ENG_NODE` восстановлен.
+
+Статус: принято.
+
 ## DEC-003. Роль VPLC Server в первых экспериментальных сериях
 
 Решение: VPLC Server фиксируется как установленный и проверенный компонент стенда, но не включается в первый baseline-контур измерений детерминизма и стабильности цикла VPLC.

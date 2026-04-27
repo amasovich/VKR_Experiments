@@ -65,6 +65,13 @@ nodes:
     planned_gateway: none
     stand_linux_interface_name: enp2s0
     stand_linux_interface_mac: "e0:51:d8:18:5a:66"
+    stand_network_persistence:
+      cloud_init_network_config: disabled
+      cloud_init_disable_file: "/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg"
+      netplan_file: "/etc/netplan/01-vkr-stand.yaml"
+      renderer: networkd
+      reboot_check: passed
+      status: "enp2s0 keeps 192.168.10.20/24 after reboot"
     secondary_ethernet_interface_name: enp1s0
     secondary_ethernet_interface_mac: "e0:51:d8:18:5a:65"
     wifi_interface_name: wlo1
@@ -433,7 +440,7 @@ stage_4_0_status:
   "1_create_workspace": done
   "2_initial_manifest": done_draft
   "3_install_ubuntu_on_mini_pc": done_reported_by_operator
-  "4_configure_static_ip": done_for_vplc_host_enp2s0
+  "4_configure_static_ip": done_for_vplc_host_enp2s0_persistent_after_reboot
   "5_check_connectivity": eng_node_vplc_host_hw_plc_verified
   "6_install_ssh_and_base_utilities": done
   "7_collect_first_config_snapshot": done

@@ -1,0 +1,52 @@
+ENG_NODE TIA Portal registry snapshot
+Collected at: 2026-04-27
+Source: Windows uninstall registry entries
+
+
+DisplayName                                                                                                 DisplayVersion Publisher                  InstallDate
+-----------                                                                                                 -------------- ---------                  -----------
+AWB Host -  TIAAdminV3 SP4  V3.0 SP4                                                                        03.00.0400     Siemens Aktiengesellschaft 20260425   
+AWB Host - TIA Addin  V3.0 + SP4                                                                            03.00.0400     Siemens Aktiengesellschaft 20260425   
+Siemens Automation License Manager                                                                          06.02.0400     Siemens Aktiengesellschaft 20260425   
+Siemens Automation License Manager V6.2 + SP4                                                               06.02.0400     Siemens Aktiengesellschaft            
+SIEMENS OPC                                                                                                 03.09.1300     Siemens AG                 20260425   
+Siemens Totally Integrated Automation Portal V20                                                            V20            Siemens AG                 20260425   
+Siemens Totally Integrated Automation Portal V20 - Hardware Support Base Package 0  V20.0                   20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Hardware Support Base Package 02  V20.0                  20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Hardware Support Base Package 03  V20.0                  20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Hardware Support Base Package 04  V20.0                  20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Hardware Support Base Package WCF-01  V20.0              20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - HelpViewer Server  V20.0                                 20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - HM All Editions Single SetupPackage  V20.0 UPD5          20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - HM NoBasic Single SetupPackage  V20.0 UPD5               20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Multiuser Client Single SetupPackage  V20.0 UPD5         20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Openness SetupPackage  V20.0 UPD5                        20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - SESSP Single SetupPackage  V20.0 UPD5                    20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Simatic Single SetupPackage  V20.0 UPD5                  20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Simatic Single SetupPackage 32 Bit  V20.0                20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - STEP 7 Safety Single SetupPackage  V20.0 UPD2            20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - STEP 7 Single SetupPackage  V20.0 UPD5                   20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Support Base Package TO-01  V20.0                        20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - Support Base Package TO-02  V20.0                        20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - TIA Portal Security Audit Log Single SetupPackage  V20.0 20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - TIA Portal Shim Single SetupPackage  V20.0               20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - TIACOMPCHECK Single SetupPackage  V20.0 + Upd5           20.00.0005     Siemens                    20260425   
+Siemens Totally Integrated Automation Portal V20 - Version Control Interface SetupPackage  V20.0 UPD5       20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - WinCC Basic ES Single SetupPackage  V20.0 UPD5           20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - WinCC Basic ES Single SetupPackage 32 Bit  V20.0         20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - WinCC CA ES Single SetupPackage  V20.0 UPD5              20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - WinCC Transfer Mandatory Single SetupPackage  V20.0 UPD5 20.00.0000     Siemens Aktiengesellschaft 20260425   
+Siemens Totally Integrated Automation Portal V20 - WinCC Unified ES Single SetupPackage  V20.0 UPD5         20.00.0000     Siemens Aktiengesellschaft 20260425   
+SIMATIC WinCC Runtime Advanced Driver (x64)                                                                 20.00.0000     Siemens Aktiengesellschaft 20260425   
+SIMATIC WinCC Runtime Advanced V17.0 UPD8                                                                   V17.0 UPD8     Siemens AG                 20260425   
+TIA Administrator V3 SP4                                                                                    V3.0.4.0       Siemens                    20260425   
+TIA Help Viewer V2.0                                                                                        V2.0           Siemens AG                 20260425   
+TIA Project Server                                                                                          2.1            Siemens AG                 20260425   
+TIA Project Server -  TIA Project ServerSingle SetupPackage  V2.1                                           02.01.0000     Siemens Aktiengesellschaft 20260425   
+Totally Integrated Automation Portal V20 -  TIA Portal Single SetupPackage  V20.0                           20.00.0000     Siemens Aktiengesellschaft 20260425   
+WinCC Runtime Advanced Simulator                                                                            17.00.0000     Siemens AG                 20260425   
+WinCC Runtime Advanced V17.0 -  SIMATIC WinCC Runtime Advanced  V17.0                                       17.00.0000     Siemens AG                 20260425   
+WinCC Runtime Advanced V17.0 - HMIRTM Tagging Package 01 Single SetupPackage  V17.0 UPD8                    17.00.0000     Siemens AG                 20260425   
+
+
+

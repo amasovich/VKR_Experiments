@@ -1,9 +1,9 @@
 manifest_id: ManifestCfg_Stand_Initial
 stand_id: VKR_STAND_01
 manifest_type: initial_pre_software_installation
-status: draft_initial_updated_after_os_install
+status: draft_initial_updated_after_tia_install
 created_at: 2026-04-25
-last_updated_at: 2026-04-25
+last_updated_at: 2026-04-27
 workspace_path_windows: "D:\\HOME_BASE\\VKR_Experiments"
 
 purpose: >
@@ -31,8 +31,11 @@ nodes:
     network_interface: "PROFINET, 2 x RJ45"
     firmware_version: TBD
     serial_number: TBD
-    project_status: not_created_yet
-    ip_assignment_status: postponed_until_tia_portal_installation
+    firmware_version_observed_in_tia_project: "V4.5.1"
+    project_status: minimal_tia_project_loaded_reported_by_operator
+    tia_project_name: "vkr_s7_min"
+    tia_project_path: "D:\\HOME_BASE\\VKR_Experiments\\plc\\siemens_s7_1200\\tia_projects\\vkr_s7_min"
+    ip_assignment_status: configured_in_tia_project_and_loaded_reported_by_operator
     planned_ip: "192.168.10.10"
     planned_netmask: "255.255.255.0"
     planned_gateway: none
@@ -84,7 +87,7 @@ nodes:
       - artifact_archiving
       - offline_processing
     os_version: TBD
-    tia_portal_version: TBD
+    tia_portal_version: "V20, registry snapshot collected on 2026-04-27"
     vplc_studio_version: TBD
     python_version: TBD
     workspace_path: "D:\\HOME_BASE\\VKR_Experiments"
@@ -127,8 +130,8 @@ network:
     eng_node_to_switch: connected_reported
     vplc_host_to_switch: connected_reported
     hw_plc_to_switch: TBD
-  connectivity_status: eng_node_vplc_host_verified
-  hw_plc_connectivity_status: postponed_until_tia_portal_installation
+  connectivity_status: eng_node_vplc_host_hw_plc_verified
+  hw_plc_connectivity_status: tia_online_connected_and_ping_verified
   verified_links:
     - link: "VPLC_HOST -> ENG_NODE"
       command: "ping -c 4 192.168.10.30"
@@ -142,6 +145,10 @@ network:
       command: "ssh vkr@192.168.10.20"
       result: "SSH login successful; ED25519 host key accepted and stored in known_hosts"
       note: "OpenSSH server active on VPLC_HOST, port 22 listens on IPv4 and IPv6"
+    - link: "ENG_NODE -> HW_PLC"
+      command: "Test-NetConnection 192.168.10.10"
+      result: "PingSucceeded: True; RTT 2 ms"
+      note: "Checked from ENG_NODE after TIA Portal project download and PLC IP configuration"
     - link: "VPLC_HOST -> Internet via Wi-Fi"
       command: "ping -c 4 8.8.8.8; ping -c 4 archive.ubuntu.com"
       result: "Both checks returned 4 transmitted, 4 received, 0% packet loss"
@@ -238,7 +245,29 @@ software_state:
     stress_tools: not_installed_yet
   eng_node:
     vscode_workspace: prepared
-    tia_portal: TBD
+    tia_portal: installed_reported_by_operator
+    tia_portal_installation_reported_at: 2026-04-27
+    tia_portal_version: "V20"
+    tia_portal_update_level_observed: "V20.0 UPD5 packages observed for STEP 7 / WinCC components"
+    tia_portal_registry_snapshot: "configs\\eng_node_tia_portal_registry_snapshot_2026-04-27.txt"
+    s7_minimal_project_check:
+      status: created_downloaded_running_reported_by_operator
+      date: 2026-04-27
+      artifact: "plc\\siemens_s7_1200\\tia_project_check_2026-04-27.md"
+      screenshot: "screenshots\\TIA Portal\\01.png"
+      project_name: "vkr_s7_min"
+      project_path: "D:\\HOME_BASE\\VKR_Experiments\\plc\\siemens_s7_1200\\tia_projects\\vkr_s7_min"
+      cpu: "CPU 1215C DC/DC/Rly"
+      article_number: "6ES7 215-1HG40-0XB0"
+      firmware_in_project: "V4.5.1"
+      ip_in_project: "192.168.10.10"
+      subnet_mask: "255.255.255.0"
+      router_used: false
+      online_state_observed_in_screenshot: "connected, CPU RUN"
+      minimal_program_logic_policy: "No additional counter logic added for this smoke-test; current goal is hardware configuration, IP assignment, download and RUN verification."
+      ping_check:
+        command: "Test-NetConnection 192.168.10.10"
+        result: "PingSucceeded: True; RTT 2 ms"
     vplc_studio: installed_connection_verified
     vplc_studio_version: "4.1.3 beta"
     vplc_studio_build: "09.04.2026 19:27:38"
@@ -315,6 +344,18 @@ artifact_structure:
   archive: "archive"
 
 configuration_snapshots:
+  eng_node_tia_portal_registry:
+    path: "configs\\eng_node_tia_portal_registry_snapshot_2026-04-27.txt"
+    collected_at: "2026-04-27"
+    collection_method: "Windows uninstall registry query on ENG_NODE"
+    status: collected
+    confirms:
+      - "Siemens Totally Integrated Automation Portal V20"
+      - "STEP 7 Single SetupPackage V20.0 UPD5"
+      - "WinCC Basic ES Single SetupPackage V20.0 UPD5"
+      - "WinCC Unified ES Single SetupPackage V20.0 UPD5"
+      - "Automation License Manager installed"
+      - "TIA Administrator installed"
   vplc_host_initial:
     path: "configs\\vplc_host_config_snapshot_2026-04-25_initial.txt"
     collected_at: "2026-04-25T13:29:45+00:00"
@@ -393,7 +434,7 @@ stage_4_0_status:
   "2_initial_manifest": done_draft
   "3_install_ubuntu_on_mini_pc": done_reported_by_operator
   "4_configure_static_ip": done_for_vplc_host_enp2s0
-  "5_check_connectivity": eng_node_vplc_host_verified_hw_plc_postponed
+  "5_check_connectivity": eng_node_vplc_host_hw_plc_verified
   "6_install_ssh_and_base_utilities": done
   "7_collect_first_config_snapshot": done
   "8_install_podman": done
@@ -401,7 +442,7 @@ stage_4_0_status:
   "10_verify_vplc_studio_bare_metal_workflow": done_minimal_project_running
   "11_create_podman_launch_profile": not_started
   "12_create_minimal_vplc_test_project": not_started
-  "13_create_minimal_s7_1200_test_project": not_started
+  "13_create_minimal_s7_1200_test_project": minimal_project_created_loaded_run_observed_ob1_logic_not_documented
   "14_first_short_run": not_started
   "15_check_raw_logs_collection": not_started
   "16_first_process_logs_py": not_started

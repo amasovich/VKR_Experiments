@@ -1,0 +1,307 @@
+﻿=== VPLC container prerequisite inspection ===
+2026-04-27T19:10:41+00:00
+ Static hostname: vplc-host
+       Icon name: computer-laptop
+         Chassis: laptop
+      Machine ID: 0433f805fa00456d8199659a963ff7f8
+         Boot ID: b89d922726db4f07bbc15dae5edbd6b9
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-119-generic
+    Architecture: x86-64
+Linux vplc-host 5.15.0-119-generic #129-Ubuntu SMP Fri Aug 2 19:25:20 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+=== Network ===
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           DOWN           
+enp2s0           UP             192.168.10.20/24 fe80::e251:d8ff:fe18:5a66/64 
+wlo1             DOWN           
+192.168.10.0/24 dev enp2s0 proto kernel scope link src 192.168.10.20 
+
+=== Podman ===
+/usr/bin/podman
+podman version 3.4.4
+crun amd64 /home/vkr/.local/share/containers/storage true
+
+=== VPLC packages ===
+ii  vplc                                             2.10.0                                           amd64        VPLC supervisor service
+ii  vplc-server                                      2.7.0                                            amd64        VPLC Server supervisor service
+/usr/local/bin/vplc
+/usr/local/bin/vplc-server
+
+=== VPLC service units ===
+● vplc.service - VPLC supervisor service
+     Loaded: loaded (/etc/systemd/system/vplc.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2026-04-27 18:31:59 UTC; 38min ago
+   Main PID: 746 (vplc)
+      Tasks: 4 (limit: 13904)
+     Memory: 2.2M
+        CPU: 3.022s
+     CGroup: /system.slice/vplc.service
+             └─746 /usr/local/bin/vplc --service
+
+Apr 27 19:07:56 vplc-host vplc[746]: Дата сборки программы..................: 25.04.2026, 18:50:45
+Apr 27 19:07:56 vplc-host vplc[746]: Размер программы.......................: 25160
+Apr 27 19:07:56 vplc-host vplc[746]: Автосохранение состояния...............: включено
+Apr 27 19:07:56 vplc-host vplc[746]: Длительность цикла (ms)................: 0.000/100
+Apr 27 19:07:56 vplc-host vplc[746]: Количество тегов.......................: 0
+Apr 27 19:07:56 vplc-host vplc[746]: Количество Modbus устройств............: 0
+Apr 27 19:07:56 vplc-host vplc[746]: Память, всего (Гб).....................: 11.43
+Apr 27 19:07:56 vplc-host vplc[746]: Память, свободно (Гб)..................: 10.93
+Apr 27 19:07:56 vplc-host vplc[746]: Диск, всего (Гб).......................: 467.35
+Apr 27 19:07:56 vplc-host vplc[746]: Диск, свободно (Гб)....................: 435.99
+# /etc/systemd/system/vplc.service
+[Unit]
+Description=VPLC supervisor service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+
+User=vplc
+Group=vplc
+
+ExecStart=/usr/local/bin/vplc --service
+
+ExecStop=/bin/kill -SIGTERM $MAINPID
+TimeoutStopSec=10
+
+Restart=always
+RestartSec=3
+
+RuntimeDirectory=vplc
+RuntimeDirectoryMode=0755
+
+StateDirectory=vplc
+CacheDirectory=vplc
+LogsDirectory=vplc
+
+UMask=0002
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vplc /var/cache/vplc /var/log/vplc /run/vplc
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+=== VPLC Server service units ===
+● vplc-server.service - VPLC Server supervisor service
+     Loaded: loaded (/etc/systemd/system/vplc-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2026-04-27 18:31:59 UTC; 38min ago
+   Main PID: 744 (vplc-server)
+      Tasks: 4 (limit: 13904)
+     Memory: 2.7M
+        CPU: 3.248s
+     CGroup: /system.slice/vplc-server.service
+             └─744 /usr/local/bin/vplc-server --service
+
+Apr 27 19:07:57 vplc-host vplc-server[744]: Облачный хаб.............................: отключен
+Apr 27 19:07:57 vplc-host vplc-server[744]: URL облачного хаба.......................: vplc-cloud.max-automation.ru:7070
+Apr 27 19:07:57 vplc-host vplc-server[744]: Локальные ВПЛК...........................: нет
+Apr 27 19:07:57 vplc-host vplc-server[744]: Облачные ВПЛК............................: нет
+Apr 27 19:07:57 vplc-host vplc-server[744]: ВПЛК Сервер
+Apr 27 19:07:57 vplc-host vplc-server[744]: ======================================
+Apr 27 19:07:57 vplc-host vplc-server[744]: Версия.........................: 2.7.0
+Apr 27 19:07:57 vplc-host vplc-server[744]: Состояние сервера..............: остановлен
+Apr 27 19:07:57 vplc-host vplc-server[744]: Локальные ВПЛК.................: нет
+Apr 27 19:07:57 vplc-host vplc-server[744]: Облачные ВПЛК..................: нет
+# /etc/systemd/system/vplc-server.service
+[Unit]
+Description=VPLC Server supervisor service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+
+User=vplc
+Group=vplc
+
+ExecStart=/usr/local/bin/vplc-server --service
+
+ExecStop=/bin/kill -SIGTERM $MAINPID
+TimeoutStopSec=10
+
+Restart=always
+RestartSec=3
+
+RuntimeDirectory=vplc-server
+RuntimeDirectoryMode=0755
+
+StateDirectory=vplc-server
+CacheDirectory=vplc-server
+LogsDirectory=vplc-server
+
+UMask=0002
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/vplc-server /var/cache/vplc-server /var/log/vplc-server /run/vplc-server
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+=== VPLC package file list ===
+/.
+/etc
+/etc/systemd
+/etc/systemd/system
+/etc/systemd/system/vplc.service
+/usr
+/usr/lib
+/usr/lib/vplc
+/usr/lib/vplc/update.sh
+/usr/local
+/usr/local/bin
+/usr/local/bin/vplc
+
+=== VPLC Server package file list ===
+/.
+/etc
+/etc/systemd
+/etc/systemd/system
+/etc/systemd/system/vplc-server.service
+/usr
+/usr/lib
+/usr/lib/vplc-server
+/usr/lib/vplc-server/update.sh
+/usr/local
+/usr/local/bin
+/usr/local/bin/vplc-server
+
+=== VPLC process and ports ===
+vplc         744       1  0 18:31 ?        00:00:03 /usr/local/bin/vplc-server --service
+vplc         746       1  0 18:31 ?        00:00:03 /usr/local/bin/vplc --service
+vkr         1974    1973  0 19:10 ?        00:00:00 bash /tmp/inspect_vplc_runtime_for_container.sh
+tcp   LISTEN 0      4096         0.0.0.0:1234      0.0.0.0:*          
+
+=== VPLC CLI state ===
+
+ __   _____ _    ___
+ \ \ / / _ \ |  / __|
+  \ V /|  _/ |_| (__
+   \_/ |_| |____\___|
+ Версия: 2.10.0
+
+
+ВПЛК, текущая конфигурация
+===========================================
+Версия..............................: 2.10.0
+IP..................................: 127.0.0.1
+Порт................................: 1234
+Название............................: vplc-1
+Время непрерывной работы............: 0 д. 0 ч. 39 м.
+Программа...........................: остановлена
+При запросе значений, отправляются..: только измененные
+Автосохранение дампа................: выключено
+Путь автосохранения дампов..........: 
+
+Облачный хаб........................: отключен
+URL облачного хаба..................: vplc-cloud.max-automation.ru:7070
+Токен...............................: 1111-1111-1111-1111
+Активных локальных соединений.......: 0
+Активных облачных соединений........: 0
+
+
+
+ __   _____ _    ___
+ \ \ / / _ \ |  / __|
+  \ V /|  _/ |_| (__
+   \_/ |_| |____\___|
+ Версия: 2.10.0
+
+
+ВПЛК, текущий статус
+======================================================
+Версия.................................: 2.10.0
+Время непрерывной работы...............: "0 д. 0 ч. 39 м."
+Активных локальных соединений..........: 0
+Активных облачных соединений...........: 0
+Программа..............................: остановлена
+Название программы.....................: vkr_minimal_vplc_tes
+Версия программы.......................: 1.0.1
+Версия IDE сборки программы............: 4.1.3
+Дата сборки программы..................: 25.04.2026, 18:50:45
+Размер программы.......................: 25160
+Автосохранение состояния...............: включено
+Длительность цикла (ms)................: 0.000/100
+Количество тегов.......................: 0
+Количество Modbus устройств............: 0
+Память, всего (Гб).....................: 11.43
+Память, свободно (Гб)..................: 10.90
+Диск, всего (Гб).......................: 467.35
+Диск, свободно (Гб)....................: 435.99
+
+
+
+=== VPLC Server CLI state ===
+
+ __   _____ _    ___    ___ ___ _____   _____ ___
+ \ \ / / _ \ |  / __|__/ __| __| _ \ \ / / __| _ \
+  \ V /|  _/ |_| (_|___\__ \ _||   /\ V /| _||   /
+   \_/ |_| |____\___|  |___/___|_|_\ \_/ |___|_|_\
+ Версия: 2.7.0
+
+
+
+ВПЛК Сервер, текущая конфигурация
+===========================================================================
+Версия...................................: 2.7.0
+IP.......................................: 127.0.0.1
+Порт.....................................: 50530
+Логирование изменения значений...........: отключено
+Теги для логирования входящих значений...: ""
+Состояние сервера........................: остановлен
+
+Облачный хаб.............................: отключен
+URL облачного хаба.......................: vplc-cloud.max-automation.ru:7070
+
+Локальные ВПЛК...........................: нет
+Облачные ВПЛК............................: нет
+
+
+
+
+ __   _____ _    ___    ___ ___ _____   _____ ___
+ \ \ / / _ \ |  / __|__/ __| __| _ \ \ / / __| _ \
+  \ V /|  _/ |_| (_|___\__ \ _||   /\ V /| _||   /
+   \_/ |_| |____\___|  |___/___|_|_\ \_/ |___|_|_\
+ Версия: 2.7.0
+
+
+
+ВПЛК Сервер
+======================================
+Версия.........................: 2.7.0
+Состояние сервера..............: остановлен
+
+Локальные ВПЛК.................: нет
+Облачные ВПЛК..................: нет
+
+
+
+
+=== Installed package files under common writable locations ===
+/home/vkr/vplc_install_2026-04-25
+/home/vkr/vplc_install_2026-04-25/vplc_latest_amd64.deb
+/home/vkr/vplc_install_2026-04-25/vplc-server_latest_amd64.deb
+
+=== Local installer cache ===
+total 1924
+drwxrwxr-x 2 vkr vkr    4096 Apr 25 13:50 .
+drwxr-x--- 7 vkr vkr    4096 Apr 25 16:34 ..
+-rw-rw-r-- 1 vkr vkr  697460 Apr 25 13:50 vplc_latest_amd64.deb
+-rw-rw-r-- 1 vkr vkr 1258908 Apr 25 13:50 vplc-server_latest_amd64.deb
+5e003f339fd280bac7fe915801f4ad8eca2b5e66b37de6d665408a9fd06e8fc3  /home/vkr/vplc_install_2026-04-25/vplc_latest_amd64.deb
+a0bf7348beeb9af4943680e61a92f686b77c41a92d158b8730f3173d4b6e0e0d  /home/vkr/vplc_install_2026-04-25/vplc-server_latest_amd64.deb

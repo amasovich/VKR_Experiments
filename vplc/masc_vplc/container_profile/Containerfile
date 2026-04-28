@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+ARG VPLC_DEB=vplc_latest_amd64.deb
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY ${VPLC_DEB} /tmp/vplc_latest_amd64.deb
+
+RUN printf '#!/bin/sh\nexit 0\n' > /usr/bin/systemctl \
+    && chmod +x /usr/bin/systemctl \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates /tmp/vplc_latest_amd64.deb \
+    && rm -f /usr/bin/systemctl \
+    && rm -rf /var/lib/apt/lists/* /tmp/vplc_latest_amd64.deb \
+    && mkdir -p /var/lib/vplc /var/cache/vplc /var/log/vplc /run/vplc \
+    && chown -R vplc:vplc /var/lib/vplc /var/cache/vplc /var/log/vplc /run/vplc
+
+USER vplc:vplc
+
+WORKDIR /var/log/vplc
+
+EXPOSE 1234/tcp
+
+ENTRYPOINT ["/usr/local/bin/vplc", "--service"]

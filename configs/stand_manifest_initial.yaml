@@ -325,6 +325,52 @@ software_state:
 planned_container_profile:
   runtime: Podman
   runtime_status: installed_verified
+  profile_status: in_progress_prerequisite_inspection_prepared
+  target_component: VPLC_runtime_only
+  excluded_initially:
+    - VPLC_Server
+  decision: "DEC-005"
+  profile_artifact: "vplc\\masc_vplc\\container_profile\\README.md"
+  inspection_scripts:
+    linux: "scripts\\linux\\inspect_vplc_runtime_for_container.sh"
+    windows_runner: "scripts\\windows\\collect_vplc_container_prereq_snapshot.ps1"
+  planned_prereq_snapshot: "configs\\vplc_host_container_prereq_snapshot_2026-04-27.txt"
+  prereq_snapshot_status: collected
+  prereq_snapshot_review: "vplc\\masc_vplc\\container_profile\\prereq_snapshot_review_2026-04-27.md"
+  containerfile: "vplc\\masc_vplc\\container_profile\\Containerfile"
+  deploy_script_windows: "scripts\\windows\\deploy_vplc_container_profile.ps1"
+  build_script_linux: "scripts\\linux\\build_vplc_container_image.sh"
+  smoke_script_linux: "scripts\\linux\\run_vplc_container_smoke.sh"
+  smoke_check:
+    status: completed
+    date: 2026-04-28
+    image: "localhost/vkr-vplc-runtime:2.10.0"
+    image_id: "ab5cb36e7c4c1d3a73b05825ce82a344e1796f25d2425333a6522a77c664d8aa"
+    container_name: "vkr-vplc-runtime-smoke"
+    container_id: "209925adca40a58a1807979994d47f6515dc129b930446a73fe87876b480769d"
+    network_mode: host
+    port_check_from_eng_node: "Test-NetConnection 192.168.10.20 -Port 1234: TcpTestSucceeded True"
+    wifi_state: down
+    final_snapshot: "configs\\vplc_host_container_smoke_snapshot_2026-04-28.txt"
+    bare_metal_services_during_check:
+      vplc_service: inactive
+      vplc_server_service: inactive
+    studio_check:
+      status: connected_program_loaded_running
+      endpoint: "192.168.10.20:1234"
+      program_name_observed: "vkr_minimal_vplc_tes"
+      program_version_observed: "1.0.7"
+      ide_build_observed: "4.1.3"
+      program_build_date_observed: "28.04.2026 21:33:39"
+      tags_observed: 1
+      connections_observed: "1 local / 0 cloud"
+      monitored_external_variable: "cycle_counter"
+      screenshots:
+        - "screenshots\\VPLC Studio\\02\\01.png"
+        - "screenshots\\VPLC Studio\\02\\02.png"
+        - "screenshots\\VPLC Studio\\02\\03.png"
+        - "screenshots\\VPLC Studio\\02\\04.png"
+    artifact: "vplc\\masc_vplc\\container_profile\\container_smoke_check_2026-04-28.md"
   execution_model: rootless_verified_for_initial_smoke_test_rootful_still_to_be_decided
   network_mode: host_planned
   restart_policy: systemd_unit_planned
@@ -435,6 +481,35 @@ configuration_snapshots:
       - "Program cycle 0.051/100 ms"
       - "Tags 1"
       - "VPLC Server stopped"
+  vplc_host_container_prereq:
+    path: "configs\\vplc_host_container_prereq_snapshot_2026-04-27.txt"
+    collected_at: "2026-04-27T19:10:41+00:00"
+    collection_method: "scp/ssh from ENG_NODE to VPLC_HOST using scripts/windows/collect_vplc_container_prereq_snapshot.ps1"
+    status: collected
+    confirms:
+      - "VPLC_HOST Ubuntu 22.04.5 LTS, kernel 5.15.0-119-generic"
+      - "enp2s0 192.168.10.20/24, wlo1 DOWN"
+      - "Podman 3.4.4, crun, rootless storage"
+      - "vplc 2.10.0 package installed"
+      - "vplc.service ExecStart=/usr/local/bin/vplc --service"
+      - "VPLC service user/group vplc:vplc"
+      - "VPLC writable paths /var/lib/vplc, /var/cache/vplc, /var/log/vplc, /run/vplc"
+      - "VPLC listens on 0.0.0.0:1234"
+  vplc_host_container_smoke:
+    path: "configs\\vplc_host_container_smoke_snapshot_2026-04-28.txt"
+    collected_at: "2026-04-28T18:46:00+00:00"
+    collection_method: "scp/ssh from ENG_NODE to VPLC_HOST using scripts/windows/collect_vplc_container_smoke_snapshot.ps1"
+    status: collected
+    confirms:
+      - "enp2s0 192.168.10.20/24, wlo1 DOWN"
+      - "bare-metal vplc.service inactive"
+      - "bare-metal vplc-server.service inactive"
+      - "container vkr-vplc-runtime-smoke running"
+      - "image localhost/vkr-vplc-runtime:2.10.0"
+      - "container network=host"
+      - "VPLC listens on 0.0.0.0:1234"
+      - "VPLC Studio client connected to container runtime"
+      - "VPLC program loaded and started in container runtime"
 
 stage_4_0_status:
   "1_create_workspace": done
@@ -447,7 +522,7 @@ stage_4_0_status:
   "8_install_podman": done
   "9_check_vplc_linux_cli": done_bare_metal_cli_verified
   "10_verify_vplc_studio_bare_metal_workflow": done_minimal_project_running
-  "11_create_podman_launch_profile": not_started_return_to_this_step_next
+  "11_create_podman_launch_profile": done_container_runtime_verified
   "12_create_minimal_s7_1200_test_project": partially_done_hw_config_loaded_run_verified_tia_export_pending
   "13_first_short_run": blocked_until_steps_11_and_12_closed
   "14_check_raw_logs_collection": not_started

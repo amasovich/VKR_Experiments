@@ -18,6 +18,7 @@ archive/**
 # Temporary files
 *.tmp
 *.bak
+*.vplc-bak
 *.vplc-backup
 *.vplc-shm
 *.vplc-wal

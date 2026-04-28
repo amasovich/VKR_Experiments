@@ -1,0 +1,121 @@
+﻿=== VPLC container smoke snapshot ===
+2026-04-28T18:46:00+00:00
+ Static hostname: vplc-host
+       Icon name: computer-laptop
+         Chassis: laptop
+      Machine ID: 0433f805fa00456d8199659a963ff7f8
+         Boot ID: e32c2dd22f5745e2829fdbcff863044e
+Operating System: Ubuntu 22.04.5 LTS
+          Kernel: Linux 5.15.0-119-generic
+    Architecture: x86-64
+Linux vplc-host 5.15.0-119-generic #129-Ubuntu SMP Fri Aug 2 19:25:20 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+=== Network ===
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           DOWN           
+enp2s0           UP             192.168.10.20/24 fe80::e251:d8ff:fe18:5a66/64 
+wlo1             DOWN           
+192.168.10.0/24 dev enp2s0 proto kernel scope link src 192.168.10.20 
+
+=== Bare-metal services ===
+inactive
+inactive
+
+=== Podman image and container ===
+ab5cb36e7c4c1d3a73b05825ce82a344e1796f25d2425333a6522a77c664d8aa 2026-04-28 18:18:45.243938458 +0000 UTC
+CONTAINER ID  IMAGE                              COMMAND     CREATED         STATUS             PORTS       NAMES
+209925adca40  localhost/vkr-vplc-runtime:2.10.0              17 minutes ago  Up 17 minutes ago              vkr-vplc-runtime-smoke
+id=209925adca40a58a1807979994d47f6515dc129b930446a73fe87876b480769d image=localhost/vkr-vplc-runtime:2.10.0 network=host status=running started=2026-04-28 18:28:41.950632544 +0000 UTC
+
+=== Ports ===
+tcp   LISTEN 0      4096         0.0.0.0:1234      0.0.0.0:*          
+
+=== Container logs ===
+
+ __   _____ _    ___
+ \ \ / / _ \ |  / __|
+  \ V /|  _/ |_| (__
+   \_/ |_| |____\___|
+ Версия: 2.10.0
+
+
+Успешно: ВПЛК запущен
+
+Успешно: Socket сервер запущен, порт: 1234
+
+ВПЛК, текущая конфигурация
+===========================================
+Версия..............................: 2.10.0
+IP..................................: 127.0.0.1
+Порт................................: 1234
+Название............................: vplc-1
+Время непрерывной работы............: 0 д. 0 ч. 0 м.
+Программа...........................: остановлена
+При запросе значений, отправляются..: только измененные
+Автосохранение дампа................: выключено
+Путь автосохранения дампов..........: 
+
+Облачный хаб........................: отключен
+URL облачного хаба..................: vplc-cloud.max-automation.ru:7070
+Токен...............................: 1111-1111-1111-1111
+Активных локальных соединений.......: 0
+Активных облачных соединений........: 0
+
+Команда <help> для справки
+
+
+
+Успешно: Локальный клиент подключен
+
+Успешно: Всего активных соединений: 1
+
+Успешно: Локальный клиент отключен
+
+Успешно: Всего активных соединений: 0
+
+Успешно: Локальный клиент подключен
+
+Успешно: Всего активных соединений: 1
+
+Успешно: Программа ВПЛК загружена, размер: 25160
+
+Ошибка: Файлы дампа отсутствуют!
+
+Ошибка: Файл дампа Modbus (MW) отсутствует!
+
+Успешно: Программа ВПЛК запущена
+
+Успешно: При запросе значений будут отправлены только измененные переменные
+
+Успешно: Переданы значения всех переменных
+
+Успешно: Переданы значения всех переменных
+
+=== Container data directories ===
+total 20
+drwxrwxr-x 5 vkr    vkr    4096 Apr 27 19:52 .
+drwxr-x--- 9 vkr    vkr    4096 Apr 27 19:52 ..
+drwxrwxr-x 2 100998 100999 4096 Apr 27 19:52 cache
+drwxrwxr-x 2 100998 100999 4096 Apr 28 18:46 lib
+drwxrwxr-x 2 100998 100999 4096 Apr 28 18:26 log
+total 144
+drwxrwxr-x 2 100998 100999  4096 Apr 28 18:46 .
+drwxrwxr-x 5 vkr    vkr     4096 Apr 27 19:52 ..
+-rwxr-xr-x 1 100998 100999 25160 Apr 28 18:33 1777401224724.bin
+-rw-r--r-- 1 100998 100999 13764 Apr 28 18:33 vkrminimalvplctes_1.0.7.cpp
+-rwxr-xr-x 1 100998 100999 25160 Apr 28 18:33 vkrminimalvplctes_1.0.7.so
+-rw-r--r-- 1 100998 100999 40960 Apr 28 18:33 vkrminimalvplctes_1.0.7.vplc
+-rw-r--r-- 1 100998 100999  1068 Apr 28 18:33 vplc.conf
+-rw-r--r-- 1 100998 100999    12 Apr 28 18:46 vplc_dump.dat
+-rw-r--r-- 1 100998 100999    32 Apr 28 18:33 vplc_dump_dict.dat
+-rw-r--r-- 1 100998 100999    12 Apr 28 18:46 vplc_dump_prev.dat
+-rw-r--r-- 1 100998 100999     0 Apr 28 18:28 vplc.lock
+-rw-r--r-- 1 100998 100999  2056 Apr 28 18:46 vplc_modbus_mw_dump.dat
+-rw-r--r-- 1 100998 100999  2056 Apr 28 18:46 vplc_modbus_mw_dump_prev.dat
+total 8
+drwxrwxr-x 2 100998 100999 4096 Apr 27 19:52 .
+drwxrwxr-x 5 vkr    vkr    4096 Apr 27 19:52 ..
+total 12
+drwxrwxr-x 2 100998 100999 4096 Apr 28 18:26 .
+drwxrwxr-x 5 vkr    vkr    4096 Apr 27 19:52 ..
+-rw-r--r-- 1 100998 100999 1638 Apr 28 18:35 vplc_logs.txt

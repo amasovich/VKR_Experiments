@@ -1,20 +1,22 @@
 manifest_id: ManifestCfg_Stand_Initial
 stand_id: VKR_STAND_01
-manifest_type: initial_pre_software_installation
-status: draft_initial_updated_after_tia_install
+manifest_type: stage_4_0_working_manifest
+status: draft_updated_after_method_alignment
 created_at: 2026-04-25
-last_updated_at: 2026-04-27
+last_updated_at: 2026-05-02
 workspace_path_windows: "D:\\HOME_BASE\\VKR_Experiments"
 
 purpose: >
-  Initial configuration snapshot of the experimental stand before software
-  installation and before experimental runs. Unknown factual parameters are
-  explicitly marked as TBD or not_installed_yet and must be updated after
-  first boot and configuration checks.
+  Working configuration and traceability snapshot of the experimental stand
+  for stage 4.0. The file started as an initial pre-run manifest and is updated
+  only when factual stand checks or accepted planning decisions are recorded.
+  Unknown factual parameters are explicitly marked as TBD or not_installed_yet
+  and must be updated only after direct inspection or confirmed operator evidence.
 
 thesis_context:
   title: "Методика оценки детерминизма и стабильности цикла управления виртуальных программируемых логических контроллеров в контейнерной среде в сравнении с аппаратными контроллерами"
   latest_draft: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\МИФИ_ВКР_2026_Березняк_В_Н_v5.docx"
+  latest_methodology_pdf: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\МИФИ_ВКР_2026_Березняк_В_Н_v5.pdf"
   stage_plan: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\04 - Этап 4\\Этап 4.0. Подготовка экспериментальной реализации стенда..md"
   stage: "Этап 4.0. Подготовка экспериментальной реализации стенда"
 
@@ -95,8 +97,8 @@ nodes:
       - offline_processing
     os_version: TBD
     tia_portal_version: "V20, registry snapshot collected on 2026-04-27"
-    vplc_studio_version: TBD
-    python_version: TBD
+    vplc_studio_version: "4.1.3 beta"
+    python_version: "3.14.0 (local .venv on ENG_NODE workspace)"
     workspace_path: "D:\\HOME_BASE\\VKR_Experiments"
     stand_network_adapter_reported: "Ethernet 2 - Realtek USB GbE Family Controller"
     planned_ip: "192.168.10.30"
@@ -120,7 +122,7 @@ nodes:
 
 network:
   segment: "192.168.10.0/24"
-  addressing: static_configured_for_eng_node_and_vplc_host
+  addressing: static_configured_for_eng_node_vplc_host_hw_plc
   dhcp: false
   internet_during_measurements: false
   vlan_or_l3_routing: false
@@ -136,7 +138,7 @@ network:
   physical_connection_status:
     eng_node_to_switch: connected_reported
     vplc_host_to_switch: connected_reported
-    hw_plc_to_switch: TBD
+    hw_plc_to_switch: connected_verified_by_tia_online_and_ping
   connectivity_status: eng_node_vplc_host_hw_plc_verified
   hw_plc_connectivity_status: tia_online_connected_and_ping_verified
   verified_links:
@@ -298,6 +300,11 @@ software_state:
       project_name_in_studio: "vkr_minimal_vplc_tes"
       project_description: "vkr_minimal_vplc_test"
       project_version: "1.0.1"
+      current_project_file_audit_2026_05_02:
+        schema_version: "4.1.4"
+        project_version: "1.0.7"
+        task_code: "cycle_counter := cycle_counter + 1;"
+        note: "Current .vplc file state after later container smoke-test rebuild; not an experimental KPI."
       cycle_duration_ms: 100
       dump_interval_cycles: 10
       dump_saving: enabled
@@ -325,7 +332,7 @@ software_state:
 planned_container_profile:
   runtime: Podman
   runtime_status: installed_verified
-  profile_status: in_progress_prerequisite_inspection_prepared
+  profile_status: completed_functional_smoke_verified
   target_component: VPLC_runtime_only
   excluded_initially:
     - VPLC_Server
@@ -372,14 +379,142 @@ planned_container_profile:
         - "screenshots\\VPLC Studio\\02\\04.png"
     artifact: "vplc\\masc_vplc\\container_profile\\container_smoke_check_2026-04-28.md"
   execution_model: rootless_verified_for_initial_smoke_test_rootful_still_to_be_decided
-  network_mode: host_planned
-  restart_policy: systemd_unit_planned
-  mounts:
+  network_mode: host_verified_for_smoke_and_planned_for_first_profile
+  restart_policy: systemd_unit_planned_not_implemented
+  smoke_mounts:
+    lib: "~/vplc_container_data/lib -> /var/lib/vplc"
+    cache: "~/vplc_container_data/cache -> /var/cache/vplc"
+    log: "~/vplc_container_data/log -> /var/log/vplc"
+  planned_persistent_mounts:
     config: "/srv/vplc/config"
     data: "/srv/vplc/data"
     log: "/srv/vplc/log"
   cpuset: TBD_after_first_boot
   cpu_rt_runtime: TBD_after_host_capability_check
+
+planned_workload_and_metrics:
+  status: workload_profile_and_rawlogs_schema_drafted_before_first_short_run
+  decision: "DEC-006"
+  planning_artifact: "00_docs\\workload_and_metrics_plan.md"
+  workload_profile_artifact: "configs\\workload_profile_v0.yaml"
+  rawlogs_schema_artifact: "configs\\rawlogs_schema_cycle_v0.yaml"
+  comparison_unit: Mode
+  compared_objects:
+    - HW_PLC
+    - vPLC_container
+  method_constraints:
+    same_scenario: true
+    same_nominal_cycle_period_T0: true
+    same_run_duration: true
+    same_load_profile: true
+    same_stress_flag: true
+    same_artifact_traceability: true
+  workload_programs:
+    status: hw_plc_s7_1200_modes_fixed_siemens_scl_v0_2_sources_prepared
+    requirement: "Implement semantically equivalent workload programs for S7-1200 and VPLC before the first short run."
+    profile_id: WorkloadProfile_v0
+    deterministic: true
+    random_values_allowed: false
+    external_io_required: false
+    siemens_scl_sources:
+      status: draft_v0_2_prepared_requires_tia_import_check
+      source_dir: "plc\\siemens_s7_1200\\scl_sources"
+      db_source: "plc\\siemens_s7_1200\\scl_sources\\DB_VKR_S7_Run.scl"
+      ob_source: "plc\\siemens_s7_1200\\scl_sources\\OB123_VKR_WorkloadCycle.scl"
+      timing_source_candidate: "RD_LOC_T().NANOSECOND"
+      timing_source_note: "TIME_TCK was rejected during TIA import because it is not supported by the current CPU or library version."
+      cycle_ob: "OB123 ordinary cyclic OB"
+      deadline_threshold_ms: 100.0
+      logging_controls:
+        freeze_logging: "Stops writes to Log.rows for manual DB snapshot."
+        reset_log_request: "One-shot reset of counters, workload state, and ring-buffer indexes before a TECH run; old rows are overwritten during the next buffer fill."
+      load_levels:
+        0: "idle"
+        1: "light, 32 passes"
+        2: "medium, 128 passes"
+        3: "high, 512 passes"
+      fixed_hw_plc_modes:
+        - mode_id: S7_L0_IDLE_10_20
+          load_level: 0
+          load_passes: 0
+          t0_ms: 10
+          deadline_threshold_ms: 20
+        - mode_id: S7_L1_LIGHT_10_20
+          load_level: 1
+          load_passes: 32
+          t0_ms: 10
+          deadline_threshold_ms: 20
+        - mode_id: S7_L2_MEDIUM_25_35
+          load_level: 2
+          load_passes: 128
+          t0_ms: 25
+          deadline_threshold_ms: 35
+        - mode_id: S7_L3_HIGH_75_100
+          load_level: 3
+          load_passes: 512
+          t0_ms: 75
+          deadline_threshold_ms: 100
+        - mode_id: S7_L3_STRESS_75_80
+          load_level: 3
+          load_passes: 512
+          t0_ms: 75
+          deadline_threshold_ms: 80
+    initial_variable_map:
+      - cycle_counter
+      - heartbeat
+      - heartbeat_divider
+      - workload_accumulator
+      - load_level
+      - load_passes
+      - error_flag
+      - int_state
+      - bool_state
+  rawlogs_schema:
+    status: schema_defined_capture_method_not_validated
+    schema_id: RawLogsCycle_v0
+    format: csv_utf8
+    run_id_format: "RUN_<YYYYMMDD>_<MODEID>_SNN_RNN"
+    series_id_format: "SER_<YYYYMMDD>_<MODEID>_SNN"
+    timestamp_policy: "Direct cycle timestamps are preferred; derived periods from polling require validation; unavailable time base leaves timing fields empty."
+    hw_plc_buffer_policy: "Current Siemens DB ring buffer has 1000 rows; use it for technical pipeline validation and first HW PLC snapshots, but use repeated series or expanded/streamed capture for final tail metrics."
+  raw_logs_cycle_fields:
+    - run_id
+    - mode_id
+    - series_id
+    - object
+    - node_id
+    - sample_index
+    - cycle_index
+    - cycle_counter
+    - ts_observe
+    - ts_start
+    - ts_end
+    - timestamp_tick_ns
+    - timestamp_source
+    - t0_ms
+    - deadline_threshold_ms
+    - Tper
+    - Jper
+    - deadline_miss
+    - heartbeat
+    - workload_accumulator
+    - load_level
+    - load_passes
+    - error_flag
+    - quality_flag
+    - notes
+  planned_kpi_after_real_raw_logs:
+    - "min(Tper)"
+    - "max(Tper)"
+    - "median(Tper)"
+    - "Q95(Tper)"
+    - "Q99(Tper)"
+    - "Q99.9(Tper)"
+    - Rmiss
+    - Lburst
+    - DQ99
+  reaction_metric_policy: "Tresp is added only after a valid input-event/output-response capture method is confirmed for both platforms."
+  first_short_run_gate: "Do not perform the first short run until workload programs and RawLogs capture method are defined."
 
 artifact_structure:
   root: "D:\\HOME_BASE\\VKR_Experiments"
@@ -523,17 +658,19 @@ stage_4_0_status:
   "9_check_vplc_linux_cli": done_bare_metal_cli_verified
   "10_verify_vplc_studio_bare_metal_workflow": done_minimal_project_running
   "11_create_podman_launch_profile": done_container_runtime_verified
-  "12_create_minimal_s7_1200_test_project": partially_done_hw_config_loaded_run_verified_tia_export_pending
-  "13_first_short_run": blocked_until_steps_11_and_12_closed
-  "14_check_raw_logs_collection": not_started
-  "15_first_process_logs_py": not_started
-  "16_trial_runs": not_started
-  "17_baseline_stress_series": not_started
-  "18_chapter_4_artifacts": not_started
-  execution_gate: "Do not proceed to step 13 until step 11 is implemented or explicitly waived, and step 12 is formally closed."
+  "12_close_s7_1200_infrastructure_smoke_check": done_no_extra_counter_smoke_required
+  "13_design_comparable_workload_programs": not_started
+  "14_define_metrics_rawlogs_and_capture_method": not_started
+  "15_first_short_run": blocked_until_steps_13_and_14_closed
+  "16_check_raw_logs_collection": not_started
+  "17_first_process_logs_py": not_started
+  "18_trial_runs": not_started
+  "19_baseline_stress_series": not_started
+  "20_chapter_4_artifacts": not_started
+  execution_gate: "Do not proceed to the first short run until comparable workload programs and RawLogs/metrics capture method are defined."
 
 traceability_notes:
   - "No experimental data are recorded in this manifest."
   - "No KPI values, logs, charts, or conclusions are generated at this stage."
   - "All TBD fields must be replaced only after factual inspection of the stand."
-  - "This manifest is the baseline reference before OS and vPLC software installation."
+  - "This manifest is the stage 4.0 working reference before experimental runs, not a raw log or summary card."

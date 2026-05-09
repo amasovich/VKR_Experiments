@@ -1,43 +1,107 @@
-# Матрица режимов испытаний ВКР
-# Файл будет уточняться после подготовки PLC, VPLC и контура логирования.
+# Матрица режимов испытаний ВКР.
+# Текущая версия фиксирует калиброванный набор HW PLC S7-1200 mode.
+# Экспериментальные KPI в этом файле не фиксируются.
+
+matrix_status: hw_plc_s7_1200_modes_fixed_before_rawlogs_export
+methodology_basis: "МИФИ_ВКР_2026_Березняк_В_Н_v5.pdf, разделы 2.2, 2.7, 3.6"
+execution_gate: "HW PLC technical DB snapshots are allowed for RawLogs pipeline validation; comparative VPLC runs require mirrored VPLC workload implementation."
+
+defaults:
+  duration_s: 600
+  series_count: 3
+  warmup_policy: "reset_log_request before run; wait until buffer_wrapped=TRUE; freeze_logging=TRUE before manual DB snapshot"
+  method_status: rawlogs_schema_cycle_v0_2_defined_manual_db_snapshot_for_hw_plc
+  workload_status: workload_profile_v0_2_siemens_scl_implemented_vplc_pending
+  workload_profile: "configs\\workload_profile_v0.yaml"
+  rawlogs_schema: "configs\\rawlogs_schema_cycle_v0.yaml"
+  timestamp_source_hw_plc: plc_internal_rd_loc_t_nanosecond
+  rawlog_buffer_rows_hw_plc: 1000
+  buffer_policy: "1000 rows are sufficient for technical pipeline validation; final KPI should use repeated series or a larger/streamed capture method."
 
 modes:
-  - mode_id: M01
+  - mode_id: S7_L0_IDLE_10_20
+    class_id: S7_L0
+    comparison_pair_id: PLC_L0_IDLE_10_20
     object: HW_PLC
-    scenario: IDLE
-    t0_ms: 20
-    load_level: LOW
-    stress_flag: BASELINE
+    scenario: idle_cycle
+    t0_ms: 10
+    deadline_threshold_ms: 20
+    load_level: 0
+    load_passes: 0
+    stress_flag: baseline
     duration_s: 600
     series_count: 3
-    status: PLANNED
+    purpose: "Базовая линия аппаратного PLC без прикладной нагрузки."
+    status: fixed_for_hw_plc_run
+    mirrored_vplc_mode_required: VPLC_L0_IDLE_10_20
 
-  - mode_id: M02
-    object: VPLC
-    scenario: IDLE
-    t0_ms: 20
-    load_level: LOW
-    stress_flag: BASELINE
-    duration_s: 600
-    series_count: 3
-    status: PLANNED
-
-  - mode_id: M03
+  - mode_id: S7_L1_LIGHT_10_20
+    class_id: S7_L1
+    comparison_pair_id: PLC_L1_LIGHT_10_20
     object: HW_PLC
-    scenario: BOOL_LOAD
-    t0_ms: 20
-    load_level: MID
-    stress_flag: BASELINE
+    scenario: workload_cycle_light
+    t0_ms: 10
+    deadline_threshold_ms: 20
+    load_level: 1
+    load_passes: 32
+    stress_flag: baseline
     duration_s: 600
     series_count: 3
-    status: PLANNED
+    purpose: "Лёгкая детерминированная workload-нагрузка аппаратного PLC."
+    status: fixed_for_hw_plc_run
+    mirrored_vplc_mode_required: VPLC_L1_LIGHT_10_20
 
-  - mode_id: M04
-    object: VPLC
-    scenario: BOOL_LOAD
-    t0_ms: 20
-    load_level: MID
-    stress_flag: BASELINE
+  - mode_id: S7_L2_MEDIUM_25_35
+    class_id: S7_L2
+    comparison_pair_id: PLC_L2_MEDIUM_25_35
+    object: HW_PLC
+    scenario: workload_cycle_medium
+    t0_ms: 25
+    deadline_threshold_ms: 35
+    load_level: 2
+    load_passes: 128
+    stress_flag: baseline
     duration_s: 600
     series_count: 3
-    status: PLANNED
+    purpose: "Средняя детерминированная workload-нагрузка аппаратного PLC."
+    status: fixed_for_hw_plc_run
+    mirrored_vplc_mode_required: VPLC_L2_MEDIUM_25_35
+
+  - mode_id: S7_L3_HIGH_75_100
+    class_id: S7_L3
+    comparison_pair_id: PLC_L3_HIGH_75_100
+    object: HW_PLC
+    scenario: workload_cycle_high
+    t0_ms: 75
+    deadline_threshold_ms: 100
+    load_level: 3
+    load_passes: 512
+    stress_flag: high
+    duration_s: 600
+    series_count: 3
+    purpose: "Высокая workload-нагрузка аппаратного PLC с рабочим запасом по deadline."
+    status: fixed_for_hw_plc_run
+    mirrored_vplc_mode_required: VPLC_L3_HIGH_75_100
+
+  - mode_id: S7_L3_STRESS_75_80
+    class_id: S7_L3_STRESS
+    comparison_pair_id: PLC_L3_STRESS_75_80
+    object: HW_PLC
+    scenario: workload_cycle_high
+    t0_ms: 75
+    deadline_threshold_ms: 80
+    load_level: 3
+    load_passes: 512
+    stress_flag: stress
+    duration_s: 600
+    series_count: 3
+    purpose: "Предельный stress-режим аппаратного PLC на той же высокой нагрузке, но с более жёстким deadline."
+    status: fixed_for_hw_plc_run
+    mirrored_vplc_mode_required: VPLC_L3_STRESS_75_80
+
+notes:
+  - "Режимы S7_* зафиксированы для ближайшего HW PLC S7-1200 съёма RawLogs."
+  - "Текущие DB snapshots в plc\\siemens_s7_1200\\for_analize используются как техническая калибровка и проверка процедуры, а не как финальные KPI."
+  - "Для сопоставления с vPLC_container должны быть созданы зеркальные VPLC_* режимы с теми же scenario, t0_ms, deadline_threshold_ms, load_level, load_passes, duration_s и series_count."
+  - "Перед ручным snapshot Siemens DB требуется reset, ожидание полного заполнения буфера State.buffer_wrapped=TRUE и только затем freeze_logging=TRUE."
+  - "Буфер 1000 строк достаточен для первого технического RawLogs pipeline; для финальных KPI рекомендуется несколько серий или расширенный/потоковый метод съёма."

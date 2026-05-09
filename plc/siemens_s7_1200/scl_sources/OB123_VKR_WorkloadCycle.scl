@@ -1,0 +1,203 @@
+ORGANIZATION_BLOCK "OB123_VKR_WorkloadCycle"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.2
+   VAR_TEMP
+      dtl_now {InstructionName := 'DTL'; LibVersion := '1.0'} : DTL;
+      rd_result : Int;
+      delta_ns : UDInt;
+      tper_ms : Real;
+      jper_ms : Real;
+      timing_valid : Bool;
+      deadline_miss : Bool;
+      quality_flag : USInt;
+      idx : Int;
+      i : Int;
+      p : Int;
+      effective_load_level : UInt;
+      load_passes : Int;
+      load_passes_uint : UInt;
+   END_VAR
+
+BEGIN
+   // VKR Siemens workload and cycle-period logging prototype.
+   // Intended call model: ordinary cyclic OB.
+   // Timing source candidate: RD_LOC_T().NANOSECOND, start-to-start between adjacent OB calls.
+   // Valid for the planned TECH run only while adjacent cyclic OB intervals are below one second.
+
+   #rd_result := RD_LOC_T(#dtl_now);
+   "DB_VKR_S7_Run".State.now_nanosecond := #dtl_now.NANOSECOND;
+
+   IF "DB_VKR_S7_Run".Config.reset_log_request THEN
+      "DB_VKR_S7_Run".State.first_cycle := TRUE;
+      "DB_VKR_S7_Run".State.prev_nanosecond := "DB_VKR_S7_Run".State.now_nanosecond;
+      "DB_VKR_S7_Run".State.sample_index := 0;
+      "DB_VKR_S7_Run".State.write_index := 0;
+      "DB_VKR_S7_Run".State.buffer_wrapped := FALSE;
+      "DB_VKR_S7_Run".State.last_delta_ns := 0;
+
+      "DB_VKR_S7_Run".Workload.cycle_counter := 0;
+      "DB_VKR_S7_Run".Workload.heartbeat := FALSE;
+      "DB_VKR_S7_Run".Workload.heartbeat_divider := 0;
+      "DB_VKR_S7_Run".Workload.workload_accumulator := 0;
+      "DB_VKR_S7_Run".Workload.load_level_effective := 0;
+      "DB_VKR_S7_Run".Workload.load_passes_effective := 0;
+      "DB_VKR_S7_Run".Workload.error_flag := FALSE;
+
+      FOR #i := 0 TO 15 DO
+         "DB_VKR_S7_Run".Workload.int_state[#i] := 0;
+         "DB_VKR_S7_Run".Workload.bool_state[#i] := FALSE;
+      END_FOR;
+
+      "DB_VKR_S7_Run".Diagnostics.timing_valid := FALSE;
+      "DB_VKR_S7_Run".Diagnostics.Tper_ms := 0.0;
+      "DB_VKR_S7_Run".Diagnostics.Jper_ms := 0.0;
+      "DB_VKR_S7_Run".Diagnostics.deadline_miss := FALSE;
+      "DB_VKR_S7_Run".Diagnostics.quality_flag := "DB_VKR_S7_Run".Config.quality_first_cycle;
+
+      "DB_VKR_S7_Run".Config.reset_log_request := FALSE;
+   END_IF;
+
+   IF "DB_VKR_S7_Run".State.first_cycle THEN
+      #delta_ns := 0;
+      #tper_ms := 0.0;
+      #jper_ms := 0.0;
+      #timing_valid := FALSE;
+      #deadline_miss := FALSE;
+      #quality_flag := "DB_VKR_S7_Run".Config.quality_first_cycle;
+      "DB_VKR_S7_Run".State.first_cycle := FALSE;
+   ELSE
+      IF "DB_VKR_S7_Run".State.now_nanosecond >= "DB_VKR_S7_Run".State.prev_nanosecond THEN
+         #delta_ns := "DB_VKR_S7_Run".State.now_nanosecond - "DB_VKR_S7_Run".State.prev_nanosecond;
+      ELSE
+         #delta_ns := ("DB_VKR_S7_Run".Config.nanosecond_wrap_ns - "DB_VKR_S7_Run".State.prev_nanosecond)
+                      + "DB_VKR_S7_Run".State.now_nanosecond;
+      END_IF;
+
+      #tper_ms := UDINT_TO_REAL(#delta_ns) / 1000000.0;
+      #jper_ms := #tper_ms - "DB_VKR_S7_Run".Config.T0_ms;
+
+      IF (#tper_ms <= 0.0) OR (#tper_ms > "DB_VKR_S7_Run".Config.max_valid_tper_ms) THEN
+         #timing_valid := FALSE;
+         #deadline_miss := FALSE;
+         #quality_flag := "DB_VKR_S7_Run".Config.quality_invalid_timestamp;
+      ELSE
+         #timing_valid := TRUE;
+         #deadline_miss := #tper_ms > "DB_VKR_S7_Run".Config.deadline_threshold_ms;
+         #quality_flag := "DB_VKR_S7_Run".Config.quality_ok;
+      END_IF;
+   END_IF;
+
+   "DB_VKR_S7_Run".State.prev_nanosecond := "DB_VKR_S7_Run".State.now_nanosecond;
+   "DB_VKR_S7_Run".State.last_delta_ns := #delta_ns;
+
+   #load_passes_uint := 0;
+
+   IF "DB_VKR_S7_Run".Config.load_level = 0 THEN
+      "DB_VKR_S7_Run".Workload.error_flag := FALSE;
+      #effective_load_level := 0;
+   ELSIF "DB_VKR_S7_Run".Config.load_level = 1 THEN
+      "DB_VKR_S7_Run".Workload.error_flag := FALSE;
+      #effective_load_level := 1;
+      #load_passes_uint := "DB_VKR_S7_Run".Config.load_passes_level1;
+   ELSIF "DB_VKR_S7_Run".Config.load_level = 2 THEN
+      "DB_VKR_S7_Run".Workload.error_flag := FALSE;
+      #effective_load_level := 2;
+      #load_passes_uint := "DB_VKR_S7_Run".Config.load_passes_level2;
+   ELSIF "DB_VKR_S7_Run".Config.load_level = 3 THEN
+      "DB_VKR_S7_Run".Workload.error_flag := FALSE;
+      #effective_load_level := 3;
+      #load_passes_uint := "DB_VKR_S7_Run".Config.load_passes_level3;
+   ELSE
+      "DB_VKR_S7_Run".Workload.error_flag := TRUE;
+      #effective_load_level := 0;
+      #quality_flag := "DB_VKR_S7_Run".Config.quality_invalid_load_level;
+   END_IF;
+
+   IF #load_passes_uint > "DB_VKR_S7_Run".Config.max_load_passes THEN
+      #load_passes_uint := "DB_VKR_S7_Run".Config.max_load_passes;
+   END_IF;
+
+   #load_passes := UINT_TO_INT(#load_passes_uint);
+   "DB_VKR_S7_Run".Workload.load_level_effective := #effective_load_level;
+   "DB_VKR_S7_Run".Workload.load_passes_effective := #load_passes_uint;
+
+   "DB_VKR_S7_Run".Workload.cycle_counter := "DB_VKR_S7_Run".Workload.cycle_counter + 1;
+
+   "DB_VKR_S7_Run".Workload.heartbeat_divider := "DB_VKR_S7_Run".Workload.heartbeat_divider + 1;
+   IF "DB_VKR_S7_Run".Workload.heartbeat_divider >= "DB_VKR_S7_Run".Config.heartbeat_divisor_cycles THEN
+      "DB_VKR_S7_Run".Workload.heartbeat := NOT "DB_VKR_S7_Run".Workload.heartbeat;
+      "DB_VKR_S7_Run".Workload.heartbeat_divider := 0;
+   END_IF;
+
+   "DB_VKR_S7_Run".Workload.workload_accumulator :=
+      ("DB_VKR_S7_Run".Workload.workload_accumulator
+       + "DB_VKR_S7_Run".Workload.cycle_counter
+       + UINT_TO_UDINT(#effective_load_level))
+      MOD "DB_VKR_S7_Run".Config.accumulator_modulus;
+
+   IF #load_passes > 0 THEN
+      FOR #p := 1 TO #load_passes DO
+         FOR #i := 0 TO 15 DO
+            "DB_VKR_S7_Run".Workload.int_state[#i] :=
+               ("DB_VKR_S7_Run".Workload.int_state[#i]
+                + "DB_VKR_S7_Run".Workload.cycle_counter
+                + INT_TO_UDINT(#i)
+                + INT_TO_UDINT(#p)
+                + UINT_TO_UDINT(#effective_load_level))
+               MOD "DB_VKR_S7_Run".Config.accumulator_modulus;
+
+            "DB_VKR_S7_Run".Workload.bool_state[#i] :=
+               ("DB_VKR_S7_Run".Workload.int_state[#i] MOD 2) = 0;
+
+            IF "DB_VKR_S7_Run".Workload.bool_state[#i] THEN
+               "DB_VKR_S7_Run".Workload.workload_accumulator :=
+                  ("DB_VKR_S7_Run".Workload.workload_accumulator
+                   + "DB_VKR_S7_Run".Workload.int_state[#i])
+                  MOD "DB_VKR_S7_Run".Config.accumulator_modulus;
+            ELSE
+               "DB_VKR_S7_Run".Workload.workload_accumulator :=
+                  ("DB_VKR_S7_Run".Workload.workload_accumulator + INT_TO_UDINT(#i) + INT_TO_UDINT(#p))
+                  MOD "DB_VKR_S7_Run".Config.accumulator_modulus;
+            END_IF;
+         END_FOR;
+      END_FOR;
+   END_IF;
+
+   "DB_VKR_S7_Run".Diagnostics.timing_valid := #timing_valid;
+   "DB_VKR_S7_Run".Diagnostics.Tper_ms := #tper_ms;
+   "DB_VKR_S7_Run".Diagnostics.Jper_ms := #jper_ms;
+   "DB_VKR_S7_Run".Diagnostics.deadline_miss := #deadline_miss;
+   "DB_VKR_S7_Run".Diagnostics.quality_flag := #quality_flag;
+
+   IF NOT "DB_VKR_S7_Run".Config.freeze_logging THEN
+      IF "DB_VKR_S7_Run".State.write_index >= 1000 THEN
+         "DB_VKR_S7_Run".State.write_index := 0;
+         "DB_VKR_S7_Run".State.buffer_wrapped := TRUE;
+      END_IF;
+
+      #idx := UINT_TO_INT("DB_VKR_S7_Run".State.write_index);
+
+      "DB_VKR_S7_Run".Log.rows[#idx].sample_index := "DB_VKR_S7_Run".State.sample_index;
+      "DB_VKR_S7_Run".Log.rows[#idx].cycle_counter := "DB_VKR_S7_Run".Workload.cycle_counter;
+      "DB_VKR_S7_Run".Log.rows[#idx].nanosecond_of_second := "DB_VKR_S7_Run".State.now_nanosecond;
+      "DB_VKR_S7_Run".Log.rows[#idx].Tper_ms := #tper_ms;
+      "DB_VKR_S7_Run".Log.rows[#idx].Jper_ms := #jper_ms;
+      "DB_VKR_S7_Run".Log.rows[#idx].deadline_miss := #deadline_miss;
+      "DB_VKR_S7_Run".Log.rows[#idx].timing_valid := #timing_valid;
+      "DB_VKR_S7_Run".Log.rows[#idx].heartbeat := "DB_VKR_S7_Run".Workload.heartbeat;
+      "DB_VKR_S7_Run".Log.rows[#idx].workload_accumulator := "DB_VKR_S7_Run".Workload.workload_accumulator;
+      "DB_VKR_S7_Run".Log.rows[#idx].load_level := "DB_VKR_S7_Run".Config.load_level;
+      "DB_VKR_S7_Run".Log.rows[#idx].load_passes := #load_passes_uint;
+      "DB_VKR_S7_Run".Log.rows[#idx].error_flag := "DB_VKR_S7_Run".Workload.error_flag;
+      "DB_VKR_S7_Run".Log.rows[#idx].quality_flag := #quality_flag;
+
+      "DB_VKR_S7_Run".State.sample_index := "DB_VKR_S7_Run".State.sample_index + 1;
+      "DB_VKR_S7_Run".State.write_index := "DB_VKR_S7_Run".State.write_index + 1;
+
+      IF ("DB_VKR_S7_Run".State.write_index >= "DB_VKR_S7_Run".Config.log_capacity)
+         OR ("DB_VKR_S7_Run".State.write_index >= 1000) THEN
+         "DB_VKR_S7_Run".State.write_index := 0;
+         "DB_VKR_S7_Run".State.buffer_wrapped := TRUE;
+      END_IF;
+   END_IF;
+END_ORGANIZATION_BLOCK

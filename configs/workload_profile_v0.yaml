@@ -1,0 +1,141 @@
+profile_id: WorkloadProfile_v0
+profile_version: "0.2"
+status: draft_siemens_source_v0_2_pre_vplc_alignment
+created_at: 2026-05-02
+source_doc: "00_docs\\workload_and_metrics_plan.md"
+methodology_context: "Mode-based comparable workload before the first short run"
+
+scope:
+  compared_objects:
+    - HW_PLC
+    - vPLC_container
+  target_languages:
+    HW_PLC: "TIA Portal SCL/ST or equivalent PLC logic"
+    vPLC_container: "VPLC Studio ST"
+  deterministic: true
+  external_io_required: false
+  random_values_allowed: false
+  network_calls_inside_cycle_allowed: false
+
+scenarios:
+  idle_cycle:
+    load_level_value: 0
+    description: "Minimal cyclic diagnostics: counter, heartbeat, accumulator update."
+  workload_cycle:
+    load_level_value: 1
+    load_passes: 32
+    description: "Light deterministic integer, boolean, and fixed-state update workload."
+  workload_cycle_medium:
+    load_level_value: 2
+    load_passes: 128
+    description: "Medium deterministic workload using repeated passes over the same fixed state."
+  workload_cycle_high:
+    load_level_value: 3
+    load_passes: 512
+    description: "High deterministic workload using repeated passes over the same fixed state."
+
+constants:
+  work_items: 16
+  load_passes_level1: 32
+  load_passes_level2: 128
+  load_passes_level3: 512
+  max_load_passes: 512
+  heartbeat_divisor_cycles: 100
+  accumulator_modulus: 2147483647
+  allowed_load_levels:
+    - 0
+    - 1
+    - 2
+    - 3
+
+variables:
+  - name: cycle_counter
+    role: "Monotonic cyclic task counter."
+    required: true
+    suggested_type_vplc: UDINT
+    suggested_type_s7: UDINT
+  - name: heartbeat
+    role: "Diagnostic bit toggled every heartbeat_divisor_cycles."
+    required: true
+    suggested_type_vplc: BOOL
+    suggested_type_s7: BOOL
+  - name: heartbeat_divider
+    role: "Internal divider for heartbeat toggle."
+    required: true
+    suggested_type_vplc: UDINT
+    suggested_type_s7: UDINT
+  - name: workload_accumulator
+    role: "Deterministic checksum-like accumulator."
+    required: true
+    suggested_type_vplc: UDINT
+    suggested_type_s7: UDINT
+  - name: load_level
+    role: "Workload selector. 0 = idle_cycle, 1 = light, 2 = medium, 3 = high."
+    required: true
+    suggested_type_vplc: UINT
+    suggested_type_s7: UINT
+  - name: load_passes
+    role: "Effective number of deterministic passes over int_state[0..15]."
+    required: true
+    suggested_type_vplc: UINT
+    suggested_type_s7: UINT
+  - name: error_flag
+    role: "Internal workload configuration error flag, not deadline miss."
+    required: true
+    suggested_type_vplc: BOOL
+    suggested_type_s7: BOOL
+  - name: int_state
+    role: "Fixed-size integer state array or equivalent numbered variables."
+    required: true
+    suggested_type_vplc: "ARRAY[0..15] OF UDINT or equivalent"
+    suggested_type_s7: "ARRAY[0..15] OF UDINT or equivalent"
+  - name: bool_state
+    role: "Fixed-size boolean state array or equivalent numbered variables."
+    required: true
+    suggested_type_vplc: "ARRAY[0..15] OF BOOL or equivalent"
+    suggested_type_s7: "ARRAY[0..15] OF BOOL or equivalent"
+
+pseudocode: |
+  cycle_counter := cycle_counter + 1
+
+  heartbeat_divider := heartbeat_divider + 1
+  IF heartbeat_divider >= heartbeat_divisor_cycles THEN
+      heartbeat := NOT heartbeat
+      heartbeat_divider := 0
+  END_IF
+
+  IF load_level NOT IN allowed_load_levels THEN
+      error_flag := TRUE
+      effective_load_level := 0
+      load_passes := 0
+  ELSE
+      effective_load_level := load_level
+      load_passes := passes_for_load_level(load_level)
+  END_IF
+
+  workload_accumulator := (workload_accumulator + cycle_counter + effective_load_level) MOD accumulator_modulus
+
+  IF load_passes > 0 THEN
+      FOR p := 1 TO load_passes DO
+          FOR i := 0 TO work_items - 1 DO
+              int_state[i] := (int_state[i] + cycle_counter + i + p + effective_load_level) MOD accumulator_modulus
+              bool_state[i] := (int_state[i] MOD 2) = 0
+              IF bool_state[i] THEN
+                  workload_accumulator := (workload_accumulator + int_state[i]) MOD accumulator_modulus
+              ELSE
+                  workload_accumulator := (workload_accumulator + i + p) MOD accumulator_modulus
+              END_IF
+          END_FOR
+      END_FOR
+  END_IF
+
+implementation_notes:
+  - "The pseudocode is semantic, not final VPLC ST or S7 SCL syntax."
+  - "If arrays are inconvenient in one environment, numbered variables with identical update order are acceptable."
+  - "Modulo arithmetic and load_passes mapping must be implemented consistently for both branches before the first run."
+  - "The workload does not create Tper, Jper, or deadline_miss values by itself."
+  - "Any platform-specific syntax adaptation must preserve the operation order and variable roles."
+
+traceability_notes:
+  - "No experimental results are stored in this profile."
+  - "This profile must be referenced by Run metadata after implementation."

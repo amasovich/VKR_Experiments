@@ -1,0 +1,77 @@
+DATA_BLOCK "DB_VKR_S7_Run"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.2
+   VAR
+      Config : Struct
+         T0_ms : Real := 100.0;
+         deadline_threshold_ms : Real := 100.0;
+         max_valid_tper_ms : Real := 1000.0;
+         load_level : UInt := 0;
+         freeze_logging : Bool := FALSE;
+         reset_log_request : Bool := FALSE;
+         log_capacity : UInt := 1000;
+         work_items : UInt := 16;
+         load_passes_level1 : UInt := 32;
+         load_passes_level2 : UInt := 128;
+         load_passes_level3 : UInt := 512;
+         max_load_passes : UInt := 512;
+         heartbeat_divisor_cycles : UDInt := 100;
+         accumulator_modulus : UDInt := 2147483647;
+         nanosecond_wrap_ns : UDInt := 1000000000;
+         quality_ok : USInt := 0;
+         quality_first_cycle : USInt := 1;
+         quality_invalid_timestamp : USInt := 2;
+         quality_invalid_load_level : USInt := 3;
+      END_STRUCT;
+
+      State : Struct
+         first_cycle : Bool := TRUE;
+         prev_nanosecond : UDInt := 0;
+         now_nanosecond : UDInt := 0;
+         sample_index : UDInt := 0;
+         write_index : UInt := 0;
+         buffer_wrapped : Bool := FALSE;
+         last_delta_ns : UDInt := 0;
+      END_STRUCT;
+
+      Workload : Struct
+         cycle_counter : UDInt := 0;
+         heartbeat : Bool := FALSE;
+         heartbeat_divider : UDInt := 0;
+         workload_accumulator : UDInt := 0;
+         load_level_effective : UInt := 0;
+         load_passes_effective : UInt := 0;
+         error_flag : Bool := FALSE;
+         int_state : Array[0..15] of UDInt;
+         bool_state : Array[0..15] of Bool;
+      END_STRUCT;
+
+      Diagnostics : Struct
+         timing_valid : Bool := FALSE;
+         Tper_ms : Real := 0.0;
+         Jper_ms : Real := 0.0;
+         deadline_miss : Bool := FALSE;
+         quality_flag : USInt := 1;
+      END_STRUCT;
+
+      Log : Struct
+         rows : Array[0..999] of Struct
+            sample_index : UDInt;
+            cycle_counter : UDInt;
+            nanosecond_of_second : UDInt;
+            Tper_ms : Real;
+            Jper_ms : Real;
+            deadline_miss : Bool;
+            timing_valid : Bool;
+            heartbeat : Bool;
+            workload_accumulator : UDInt;
+            load_level : UInt;
+            load_passes : UInt;
+            error_flag : Bool;
+            quality_flag : USInt;
+         END_STRUCT;
+      END_STRUCT;
+   END_VAR
+
+BEGIN
+END_DATA_BLOCK

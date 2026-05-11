@@ -4,74 +4,75 @@
 
 **«Методика оценки детерминизма и стабильности цикла управления виртуальных программируемых логических контроллеров в контейнерной среде в сравнении с аппаратными контроллерами»**.
 
-Репозиторий предназначен для воспроизводимого хранения стендовых конфигураций, исходных программ PLC/VPLC, первичных журналов измерений, обработанных таблиц, графиков и итоговых артефактов практической части ВКР.
+Материалы опубликованы для проверки состава эксперимента, исходных программ контроллеров, первичных данных, обработанных показателей и итоговых сравнительных артефактов.
 
-## Что проверялось
+## Цель эксперимента
 
-В эксперименте сравнивались два объекта:
+Цель практической части - проверить применимость разработанной методики на двух реализациях циклического контура управления:
 
-| Объект | Обозначение | Назначение |
+| Объект | Обозначение в данных | Роль в эксперименте |
 |---|---|---|
-| Siemens S7-1200 CPU 1215C | `HW_PLC` | аппаратный PLC как эталонная точка сравнения |
-| MASC/VPLC MAX Automation на mini-PC | `vPLC_container` / `VPLC_HOST` | виртуальный PLC на вычислительном узле |
+| Siemens S7-1200 CPU 1215C | `HW_PLC`, `S7_*` | аппаратный PLC, базовая точка сравнения |
+| MASC/VPLC MAX Automation на mini-PC | `VPLC_HOST`, `VPLC_*` | виртуальный PLC в контейнерной среде |
 
-Сравнение выполнялось по методике оценки детерминизма и стабильности цикла управления. Основной предмет анализа:
+Сравнение выполнено по показателям стабильности цикла:
 
 - фактический период цикла `Tper`;
-- джиттер периода `Jper`;
-- пропуск deadline `deadline_miss`;
-- доля пропусков `Rmiss`;
-- максимальная серия нарушений `Lburst`;
+- отклонение периода от заданного значения `Jper`;
+- факт превышения deadline `deadline_miss`;
+- доля превышений `Rmiss`;
+- максимальная серия превышений `Lburst`;
 - квантили `Q99(Tper)` и `Q99.9(Tper)`;
-- повторяемость между прогонами;
-- качество данных и исключённые строки.
+- повторяемость результатов между прогонами;
+- качество данных и число исключённых строк.
 
-## Режимы эксперимента
+## Режимы измерений
 
-Финальная матрица включает 5 зеркальных режимов для HW PLC и VPLC:
+Финальная серия включает 5 сопоставимых режимов для аппаратного PLC и VPLC. Для каждого режима выполнено 5 повторов по 1000 строк RawLogs.
 
 | Режим | T0, ms | Deadline, ms | Load level | Load passes | Назначение |
 |---|---:|---:|---:|---:|---|
-| `L0_IDLE_10_20` | 10 | 20 | 0 | 0 | baseline / idle |
+| `L0_IDLE_10_20` | 10 | 20 | 0 | 0 | базовый холостой режим |
 | `L1_LIGHT_10_20` | 10 | 20 | 1 | 32 | лёгкая нагрузка |
 | `L2_MEDIUM_25_35` | 25 | 35 | 2 | 128 | средняя нагрузка |
 | `L3_HIGH_75_100` | 75 | 100 | 3 | 512 | высокая рабочая нагрузка |
-| `L3_STRESS_75_80` | 75 | 80 | 3 | 512 | stress-режим / граница устойчивости |
+| `L3_STRESS_75_80` | 75 | 80 | 3 | 512 | стресс-режим с ужесточённым deadline |
 
-Для каждого режима выполнено 5 повторов по 1000 строк RawLogs.
+Стресс-режим используется как проверка границы устойчивости. Его превышения deadline трактуются отдельно от рабочих режимов и не являются ошибкой проведения эксперимента.
 
-## Быстрый маршрут по репозиторию
-
-Для проверки результатов Главы 4 начинать лучше с этих файлов:
-
-| Файл | Назначение |
-|---|---|
-| `00_docs\chapter_4_handoff.md` | краткий пакет передачи артефактов для написания Главы 4 |
-| `00_docs\chapter_4_artifact_index.md` | индекс всех ключевых артефактов |
-| `00_docs\chapter_4_artifact_audit_2026-05-11.md` | контрольный аудит полноты таблиц, графиков и ссылок |
-| `00_docs\chapter_4_green_yellow_red_scale.md` | инженерная шкала GREEN/YELLOW/RED |
-| `processed_tables\comparison\mode_summary.csv` | сводка KPI по всем режимам |
-| `processed_tables\comparison\s7_vs_vplc_pair_comparison.csv` | парное сравнение HW PLC и VPLC |
-| `processed_tables\comparison\threshold_status.csv` | статусы GREEN/YELLOW/RED |
-| `summary_cards\figures\figures_chapter_4_guide.md` | описание графиков и рекомендации по вставке в текст |
-
-## Структура каталогов
+## Состав репозитория
 
 | Каталог | Содержимое |
 |---|---|
-| `00_docs` | рабочие документы, решения, журнал этапа 4.0, handoff и пояснения для Главы 4 |
-| `configs` | конфигурационные снимки, manifest, матрица режимов, профиль workload, профиль порогов |
-| `event_journal` | машинно-читаемый EventJournal по методике |
-| `plc\siemens_s7_1200` | материалы Siemens S7-1200, SCL sources, DB snapshots и проверки |
-| `vplc\masc_vplc` | материалы MASC/VPLC, ST sources, проекты VPLC Studio, проверки и планы |
-| `raw_logs` | первичные журналы измерений |
-| `processed_tables` | обработанные таблицы KPI |
+| `00_docs` | документы эксперимента, журнал этапа, индекс артефактов, ограничения и инженерная интерпретация |
+| `configs` | конфигурации стенда, матрица режимов, схема RawLogs и профиль порогов |
+| `event_journal` | машинно-читаемый журнал событий эксперимента |
+| `plc\siemens_s7_1200` | исходные SCL-файлы Siemens, DB snapshots и материалы проверки HW PLC |
+| `vplc\masc_vplc` | исходные ST-файлы VPLC, проекты VPLC Studio, dump-снимки и материалы проверки VPLC |
+| `raw_logs` | первичные CSV-журналы измерений |
+| `processed_tables` | рассчитанные KPI и сравнительные таблицы |
 | `summary_cards` | итоговые карточки режимов, сравнительные карточки и графики |
 | `scripts\python` | скрипты конвертации, обработки, сравнения, статусов, карточек, графиков и EventJournal |
-| `scripts\windows` | PowerShell-скрипты запуска и сбора данных |
+| `scripts\windows` | PowerShell-скрипты сбора данных и запуска VPLC-прогонов |
 | `scripts\linux` | Bash-скрипты для узла VPLC |
-| `screenshots` | скриншоты проверки VPLC Studio и других этапов |
-| `archive` | архивные/исходные справочные материалы, если включены в публикационный набор |
+| `screenshots` | скриншоты этапов проверки и подтверждения работы VPLC Studio |
+| `archive` | извлечённые справочные материалы и текстовые копии использованных документов |
+
+## Ключевые артефакты
+
+| Файл | Назначение |
+|---|---|
+| `00_docs\chapter_4_artifact_index.md` | индекс основных артефактов практической части |
+| `00_docs\chapter_4_artifact_audit_2026-05-11.md` | контроль полноты таблиц, графиков и ссылок |
+| `00_docs\stage_4_0_log.md` | человекочитаемый журнал выполнения практического этапа |
+| `event_journal\event_journal.csv` | машинно-читаемый EventJournal |
+| `configs\mode_matrix.yaml` | матрица режимов эксперимента |
+| `configs\mode_thresholds.yaml` | профиль GREEN/YELLOW/RED-порогов |
+| `00_docs\chapter_4_green_yellow_red_scale.md` | табличное описание инженерной шкалы принятия решения |
+| `processed_tables\comparison\mode_summary.csv` | сводка KPI по всем режимам |
+| `processed_tables\comparison\s7_vs_vplc_pair_comparison.csv` | парное сравнение S7 и VPLC |
+| `processed_tables\comparison\threshold_status.csv` | итоговые статусы GREEN/YELLOW/RED |
+| `summary_cards\figures\figures_chapter_4_guide.md` | описание сформированных графиков |
 
 ## Первичные данные
 
@@ -82,20 +83,24 @@ raw_logs\hw_plc_s7_1200
 raw_logs\vplc_internal
 ```
 
-Ожидаемый состав финальной серии:
+Состав финальной серии:
 
 ```text
 raw_logs\hw_plc_s7_1200\S7_L*      -> 25 CSV
 raw_logs\vplc_internal\VPLC_L*     -> 25 CSV
 ```
 
-Технические VPLC-прогоны, если присутствуют, не входят в финальную обработку и отделены от режимов `VPLC_L*`.
+Для VPLC также сохранены исходные dump-снимки ring buffer:
 
-RawLogs являются первичными артефактами трассируемости и не редактируются вручную.
+```text
+vplc\masc_vplc\vkr_vplc_wl_timing_v03\final_dumps_20260510
+```
+
+Эти dump-снимки вместе со скриптом `convert_vplc_dump_to_rawlogs.py` позволяют повторно получить VPLC RawLogs. RawLogs рассматриваются как первичные экспериментальные данные и не редактируются вручную.
 
 ## Обработанные таблицы
 
-Ключевые таблицы:
+Основные таблицы по каждому объекту:
 
 ```text
 processed_tables\hw_plc_s7_1200\run_metrics.csv
@@ -105,7 +110,11 @@ processed_tables\hw_plc_s7_1200\mode_metrics.csv
 processed_tables\vplc_internal\run_metrics.csv
 processed_tables\vplc_internal\run_metrics_extended.csv
 processed_tables\vplc_internal\mode_metrics.csv
+```
 
+Сравнительные таблицы:
+
+```text
 processed_tables\comparison\mode_summary.csv
 processed_tables\comparison\s7_vs_vplc_pair_comparison.csv
 processed_tables\comparison\s7_vs_vplc_pair_delta.csv
@@ -117,34 +126,31 @@ processed_tables\comparison\threshold_status.csv
 
 ## Графики
 
-Графики для Главы 4 лежат в:
+Графики расположены в:
 
 ```text
 summary_cards\figures
 ```
 
-Описание всех графиков:
+Их состав и назначение описаны в:
 
 ```text
 summary_cards\figures\figures_chapter_4_guide.md
+summary_cards\figures\figures_manifest.csv
 ```
 
-Минимальный рекомендуемый набор для основного текста:
+Основные графики показывают:
 
-1. `fig_4_1_tper_quantiles_by_mode.png`;
-2. `fig_4_2_deadline_miss_rate_by_mode.png`;
-3. `fig_4_6_vplc_minus_s7_quantile_delta.png`;
-4. `fig_4_7_threshold_status_heatmap.png`;
-5. `fig_4_8_data_quality_excluded_rows.png`.
+- изменение квантилей `Tper` по режимам;
+- долю deadline miss;
+- разницу VPLC и S7 по ключевым квантилям;
+- итоговые статусы GREEN/YELLOW/RED;
+- качество данных;
+- временные ряды для режимов `L3_HIGH_75_100` и `L3_STRESS_75_80`.
 
-Дополнительно для high-load/stress-сравнения:
+## Инженерная шкала
 
-- `fig_4_10_high_tper_timeseries_r01.png`;
-- `fig_4_4_stress_tper_timeseries_r01.png`.
-
-## Инженерная шкала GREEN/YELLOW/RED
-
-Пороговый профиль:
+Для интерпретации результатов используется профиль:
 
 ```text
 configs\mode_thresholds.yaml
@@ -162,33 +168,7 @@ calibrated_for_vkr_chapter_4
 умеренно критичный циклический контур управления / технологической автоматики без функций ПАЗ/SIL
 ```
 
-Табличное описание шкалы:
-
-```text
-00_docs\chapter_4_green_yellow_red_scale.md
-```
-
-Для stress-режима `L3_STRESS_75_80` статус RED трактуется как достижение или пересечение границы устойчивости при намеренно жёстком deadline, а не как ошибка эксперимента.
-
-## EventJournal
-
-Человекочитаемый журнал этапа:
-
-```text
-00_docs\stage_4_0_log.md
-```
-
-Машинно-читаемый EventJournal по таблице А.4 методики:
-
-```text
-event_journal\event_journal.csv
-```
-
-EventJournal формируется из журнала этапа 4.0 скриптом:
-
-```powershell
-.\.venv\Scripts\python.exe scripts\python\build_event_journal_from_stage_log.py
-```
+Шкала GREEN/YELLOW/RED применяется как инженерная шкала принятия решения для выбранного класса сценария. Она не является универсальным нормативом для любых промышленных систем.
 
 ## Воспроизведение обработки
 
@@ -201,31 +181,31 @@ EventJournal формируется из журнала этапа 4.0 скри�
 .\.venv\Scripts\python.exe scripts\python\process_cycle_rawlogs.py --input-root raw_logs\vplc_internal --output-root processed_tables\vplc_internal --pattern "VPLC_L*\*.csv"
 ```
 
-Сравнительные таблицы:
+Формирование сравнительных таблиц:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\python\build_comparison_tables.py
 ```
 
-Статусы GREEN/YELLOW/RED:
+Присвоение статусов GREEN/YELLOW/RED:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\python\assign_mode_status.py
 ```
 
-SummaryCards:
+Генерация SummaryCards:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\python\generate_summary_cards.py
 ```
 
-Графики:
+Генерация графиков:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\python\generate_chapter4_figures.py
 ```
 
-EventJournal:
+Генерация EventJournal:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\python\build_event_journal_from_stage_log.py
@@ -244,35 +224,18 @@ EventJournal:
 | `scripts\python\generate_chapter4_figures.py` | генерация графиков |
 | `scripts\python\build_event_journal_from_stage_log.py` | генерация EventJournal |
 
-## Ограничения
+## Ограничения интерпретации
 
-Результаты относятся к конкретному стенду, версии VPLC, workload-программам и выбранной матрице режимов. Они не являются универсальной оценкой всех виртуальных PLC или всех задач реального времени.
+Результаты относятся к конкретному стенду, версиям программного обеспечения, исходным программам PLC/VPLC и выбранной матрице режимов. Они не являются универсальной оценкой всех виртуальных PLC или всех задач реального времени.
 
-Подробные ограничения:
+Подробные ограничения и инженерная интерпретация приведены в:
 
 ```text
 00_docs\chapter_4_limitations.md
-```
-
-Инженерная интерпретация:
-
-```text
 00_docs\chapter_4_cause_interpretation.md
 00_docs\chapter_4_engineering_recommendations.md
 ```
 
-## Примечание о публикации
+## Исключённые из публикации файлы
 
-Служебные файлы локальной работы, виртуальные окружения Python, временные файлы IDE, кэши и agent-инструкции не являются экспериментальными артефактами и не требуются для проверки результатов.
-
-Основными артефактами воспроизводимости являются:
-
-- `configs`;
-- `plc`;
-- `vplc`;
-- `raw_logs`;
-- `processed_tables`;
-- `summary_cards`;
-- `event_journal`;
-- `scripts`;
-- `00_docs`.
+В репозиторий не включаются локальные служебные файлы, виртуальные окружения Python, временные файлы IDE, кэши, agent-инструкции и резервные файлы VPLC Studio. Они не являются экспериментальными артефактами и не требуются для проверки результатов.

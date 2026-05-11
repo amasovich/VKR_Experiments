@@ -1,0 +1,11 @@
+object,mode_id,source,t0_ms,deadline_threshold_ms,rows_ok_total,run_count,q99_ms,q999_ms,rmiss,lburst,valid_ratio_min,q99_limit_green,q99_limit_yellow,q999_limit_green,q999_limit_yellow,rmiss_limit_green,rmiss_limit_yellow,lburst_limit_green,lburst_limit_yellow,valid_ratio_green_min,valid_ratio_yellow_min,hard_fail,status,reasons,threshold_profile_status
+HW_PLC,S7_L0_IDLE_10_20,hw_plc_s7_1200,10,20,5000,5,1.39,1.733,0,0,1,18,20,20,24,0,0.01,0,1,1,0.99,0,GREEN,all_green_criteria_met,calibrated_for_vkr_chapter_4
+HW_PLC,S7_L1_LIGHT_10_20,hw_plc_s7_1200,10,20,5000,5,7.307,7.737,0,0,1,18,20,20,24,0,0.01,0,1,1,0.99,0,GREEN,all_green_criteria_met,calibrated_for_vkr_chapter_4
+HW_PLC,S7_L2_MEDIUM_25_35,hw_plc_s7_1200,25,35,5000,5,24.819,25.464,0,0,1,31.5,35,35,42,0,0.01,0,1,1,0.99,0,GREEN,all_green_criteria_met,calibrated_for_vkr_chapter_4
+HW_PLC,S7_L3_HIGH_75_100,hw_plc_s7_1200,75,100,5000,5,83.569,86.721,0,0,1,90,100,100,120,0,0.01,0,1,1,0.99,0,GREEN,all_green_criteria_met,calibrated_for_vkr_chapter_4
+HW_PLC,S7_L3_STRESS_75_80,hw_plc_s7_1200,75,80,5000,5,83.669,86.208,0.0288,1,1,72,80,80,96,0,0.03,0,1,1,0.99,0,RED,q99_above_yellow,calibrated_for_vkr_chapter_4
+vPLC_container,VPLC_L0_IDLE_10_20,vplc_internal,10,20,4970,5,17,27,0.005633803,1,0.991,18,20,20,24,0,0.01,0,1,1,0.99,0,RED,q999_above_yellow,calibrated_for_vkr_chapter_4
+vPLC_container,VPLC_L1_LIGHT_10_20,vplc_internal,10,20,4961,5,23,30,0.00624874,1,0.986,18,20,20,24,0,0.01,0,1,1,0.99,0,RED,q99_above_yellow;q999_above_yellow;valid_ratio_below_yellow,calibrated_for_vkr_chapter_4
+vPLC_container,VPLC_L2_MEDIUM_25_35,vplc_internal,25,35,4995,5,45,54,0.011011011,1,0.998,31.5,35,35,42,0,0.01,0,1,1,0.99,0,RED,q99_above_yellow;q999_above_yellow;rmiss_above_yellow,calibrated_for_vkr_chapter_4
+vPLC_container,VPLC_L3_HIGH_75_100,vplc_internal,75,100,5000,5,98,105,0.0024,1,1,90,100,100,120,0,0.01,0,1,1,0.99,0,YELLOW,q99_above_green;q999_above_green;rmiss_above_green;lburst_above_green,calibrated_for_vkr_chapter_4
+vPLC_container,VPLC_L3_STRESS_75_80,vplc_internal,75,80,5000,5,97,98,0.0234,1,1,72,80,80,96,0,0.03,0,1,1,0.99,0,RED,q99_above_yellow;q999_above_yellow,calibrated_for_vkr_chapter_4

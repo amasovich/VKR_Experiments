@@ -7,6 +7,8 @@ __pycache__/
 raw_logs/**
 processed_tables/**
 archive/**
+vplc/masc_vplc/dump_log_probe/**
+vplc/masc_vplc/status_probe/**
 *.zip
 *.7z
 
@@ -18,6 +20,7 @@ archive/**
 # Temporary files
 *.tmp
 *.bak
+.matplotlib-cache/
 *.vplc-bak
 *.vplc-backup
 *.vplc-shm

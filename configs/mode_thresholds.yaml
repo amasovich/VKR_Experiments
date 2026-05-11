@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "status": "calibrated_for_vkr_chapter_4",
+  "methodology_basis": [
+    "Глава 2, подпункт 2.5: критерии допустимости и шкала GREEN/YELLOW/RED",
+    "Формула (2.26): Limits(Mode) как функция класса сценария, T0, LoadLevel и RefProfile",
+    "Приложение А, таблица А.13: калибровка порогов допустимости по классам сценариев",
+    "Приложение А, таблица А.14: лист присвоения статуса режиму GREEN/YELLOW/RED"
+  ],
+  "purpose": "Калиброванный профиль порогов для воспроизводимого присвоения GREEN/YELLOW/RED в Главе 4 ВКР.",
+  "scenario_class": {
+    "name": "moderately_critical_cyclic_control",
+    "ru_name": "умеренно критичный циклический контур управления / технологической автоматики без функций ПАЗ/SIL",
+    "assumptions": [
+      "цикл важен для устойчивости управления",
+      "одиночный редкий deadline_miss допустим только как warning",
+      "серии пропусков deadline недопустимы",
+      "рабочий режим должен иметь запас относительно deadline",
+      "stress-режим используется для определения границы устойчивости, а не как штатный рабочий режим"
+    ]
+  },
+  "status_rules": {
+    "green": "Режим пригоден с запасом: нет hard-fail; Q99 <= 0.90*deadline; Q99.9 <= deadline; Rmiss = 0; Lburst = 0; valid_ratio = 1.0.",
+    "yellow": "Режим потенциально применим, но требует инженерного контроля: нет hard-fail; показатели не хуже yellow_* пределов.",
+    "red": "Режим не рекомендуется как рабочий для выбранного класса процесса: есть hard-fail или хотя бы один показатель хуже yellow_* предела.",
+    "stress_boundary": "Для stress-режима RED не трактуется как ошибка эксперимента; он означает достижение или пересечение границы устойчивости при намеренно жёстком deadline."
+  },
+  "defaults": {
+    "green_q99_factor_of_deadline": 0.90,
+    "yellow_q99_factor_of_deadline": 1.00,
+    "green_q999_factor_of_deadline": 1.00,
+    "yellow_q999_factor_of_deadline": 1.20,
+    "green_rmiss_max": 0.0,
+    "yellow_rmiss_max": 0.01,
+    "green_lburst_max": 0,
+    "yellow_lburst_max": 1,
+    "green_valid_ratio_min": 1.0,
+    "yellow_valid_ratio_min": 0.99,
+    "hard_fail_valid_ratio_min": 0.95,
+    "hard_fail_lburst_min": 5,
+    "hard_fail_rmiss_min": 0.05
+  },
+  "mode_overrides": {
+    "S7_L3_STRESS_75_80": {
+      "mode_role": "stress_boundary",
+      "yellow_rmiss_max": 0.03,
+      "note": "Stress-режим с намеренно более жёстким deadline. Допускается отдельная инженерная трактовка Rmiss; Q99/Q99.9 не смягчаются."
+    },
+    "VPLC_L3_STRESS_75_80": {
+      "mode_role": "stress_boundary",
+      "yellow_rmiss_max": 0.03,
+      "note": "Stress-режим с намеренно более жёстким deadline. Допускается отдельная инженерная трактовка Rmiss; Q99/Q99.9 не смягчаются."
+    }
+  }
+}

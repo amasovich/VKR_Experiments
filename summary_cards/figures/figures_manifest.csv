@@ -1,0 +1,11 @@
+figure,source,purpose
+fig_4_1_tper_quantiles_by_mode.png,processed_tables\comparison\mode_summary.csv,Сравнить Q99/Q99.9 Tper с deadline по всем режимам
+fig_4_2_deadline_miss_rate_by_mode.png,processed_tables\comparison\mode_summary.csv,Показать долю deadline_miss по режимам
+fig_4_3_q99_repeatability_by_run.png,processed_tables\hw_plc_s7_1200\run_metrics.csv; processed_tables\vplc_internal\run_metrics.csv,Показать разброс Q99 между пятью повторами
+fig_4_4_stress_tper_timeseries_r01.png,RawLogs R01 для S7_L3_STRESS_75_80 и VPLC_L3_STRESS_75_80,Показать временную форму Tper в stress-режиме
+fig_4_5_stress_tper_ecdf_r01.png,RawLogs R01 для S7_L3_STRESS_75_80 и VPLC_L3_STRESS_75_80,Показать распределение Tper в stress-режиме
+fig_4_10_high_tper_timeseries_r01.png,RawLogs R01 для S7_L3_HIGH_75_100 и VPLC_L3_HIGH_75_100,Показать временную форму Tper в рабочем high-load режиме с запасом до deadline
+fig_4_6_vplc_minus_s7_quantile_delta.png,processed_tables\comparison\s7_vs_vplc_pair_comparison.csv,Показать абсолютную дельту Q99/Q99.9 между VPLC и HW PLC
+fig_4_7_threshold_status_heatmap.png,processed_tables\comparison\threshold_status.csv,"Показать, какие критерии дают GREEN/YELLOW/RED по каждому режиму"
+fig_4_8_data_quality_excluded_rows.png,processed_tables\comparison\data_quality_summary.csv,Показать исключённые строки RawLogs и прозрачность качества данных
+fig_4_9_tper_boxplot_all_modes.png,RawLogs финальных режимов S7 и VPLC,Показать распределения Tper по всем режимам без выбросов на boxplot

@@ -235,7 +235,3 @@ calibrated_for_vkr_chapter_4
 00_docs\chapter_4_cause_interpretation.md
 00_docs\chapter_4_engineering_recommendations.md
 ```
-
-## Исключённые из публикации файлы
-
-В репозиторий не включаются локальные служебные файлы, виртуальные окружения Python, временные файлы IDE, кэши, agent-инструкции и резервные файлы VPLC Studio. Они не являются экспериментальными артефактами и не требуются для проверки результатов.

@@ -6,6 +6,7 @@ __pycache__/
 # Logs and heavy experiment data
 raw_logs/**
 processed_tables/**
+archive/
 archive/**
 vplc/masc_vplc/dump_log_probe/**
 vplc/masc_vplc/status_probe/**
@@ -15,7 +16,6 @@ vplc/masc_vplc/status_probe/**
 # Keep directory placeholders
 !raw_logs/.gitkeep
 !processed_tables/.gitkeep
-!archive/.gitkeep
 
 # Temporary files
 AGENTS.md

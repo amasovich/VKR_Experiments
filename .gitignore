@@ -18,6 +18,7 @@ vplc/masc_vplc/status_probe/**
 !archive/.gitkeep
 
 # Temporary files
+AGENTS.md
 *.tmp
 *.bak
 .matplotlib-cache/

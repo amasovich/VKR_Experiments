@@ -41,6 +41,7 @@
 |---|---|
 | `00_docs\data_processing_plan_2026-05-10.md` | план обработки данных по методике и перечень недостающих артефактов |
 | `00_docs\stage_4_0_log.md` | журнал практического этапа 4.0 |
+| `event_journal\event_journal.csv` | машинно-читаемый EventJournal по таблице А.4 методики, сформирован из `stage_4_0_log.md` |
 | `00_docs\vplc_workload_rawlogs_plan.md` | план VPLC workload и RawLogs |
 | `00_docs\chapter_4_vplc_timing_note.md` | примечание по эволюции способа получения VPLC timing |
 | `00_docs\chapter_4_green_yellow_red_scale.md` | зафиксированная инженерная шкала GREEN/YELLOW/RED для Главы 4 |
@@ -55,6 +56,7 @@
 | Файл | Назначение |
 |---|---|
 | `scripts\python\process_cycle_rawlogs.py` | расчёт KPI по RawLogs и расширенных KPI |
+| `scripts\python\build_event_journal_from_stage_log.py` | формирование `event_journal\event_journal.csv` из журнала этапа 4.0 |
 | `scripts\python\build_comparison_tables.py` | формирование сравнительных таблиц для Главы 4 |
 | `scripts\python\assign_mode_status.py` | применение калиброванного профиля порогов к режимам |
 | `scripts\python\generate_summary_cards.py` | генерация Markdown SummaryCards по режимам и сравнительным парам |

@@ -35,6 +35,21 @@ modes:
     status: fixed_for_hw_plc_run
     mirrored_vplc_mode_required: VPLC_L0_IDLE_10_20
 
+  - mode_id: VPLC_L0_IDLE_10_20
+    class_id: VPLC_L0
+    comparison_pair_id: PLC_L0_IDLE_10_20
+    object: vPLC_container
+    scenario: idle_cycle
+    t0_ms: 10
+    deadline_threshold_ms: 20
+    load_level: 0
+    load_passes: 0
+    stress_flag: baseline
+    duration_s: 600
+    series_count: 3
+    purpose: "Зеркальная базовая линия VPLC без прикладной нагрузки."
+    status: planned_pending_vplc_workload_and_rawlogs_method
+
   - mode_id: S7_L1_LIGHT_10_20
     class_id: S7_L1
     comparison_pair_id: PLC_L1_LIGHT_10_20
@@ -50,6 +65,21 @@ modes:
     purpose: "Лёгкая детерминированная workload-нагрузка аппаратного PLC."
     status: fixed_for_hw_plc_run
     mirrored_vplc_mode_required: VPLC_L1_LIGHT_10_20
+
+  - mode_id: VPLC_L1_LIGHT_10_20
+    class_id: VPLC_L1
+    comparison_pair_id: PLC_L1_LIGHT_10_20
+    object: vPLC_container
+    scenario: workload_cycle_light
+    t0_ms: 10
+    deadline_threshold_ms: 20
+    load_level: 1
+    load_passes: 32
+    stress_flag: baseline
+    duration_s: 600
+    series_count: 3
+    purpose: "Зеркальная лёгкая workload-нагрузка VPLC."
+    status: planned_pending_vplc_workload_and_rawlogs_method
 
   - mode_id: S7_L2_MEDIUM_25_35
     class_id: S7_L2
@@ -67,6 +97,21 @@ modes:
     status: fixed_for_hw_plc_run
     mirrored_vplc_mode_required: VPLC_L2_MEDIUM_25_35
 
+  - mode_id: VPLC_L2_MEDIUM_25_35
+    class_id: VPLC_L2
+    comparison_pair_id: PLC_L2_MEDIUM_25_35
+    object: vPLC_container
+    scenario: workload_cycle_medium
+    t0_ms: 25
+    deadline_threshold_ms: 35
+    load_level: 2
+    load_passes: 128
+    stress_flag: baseline
+    duration_s: 600
+    series_count: 3
+    purpose: "Зеркальная средняя workload-нагрузка VPLC."
+    status: planned_pending_vplc_workload_and_rawlogs_method
+
   - mode_id: S7_L3_HIGH_75_100
     class_id: S7_L3
     comparison_pair_id: PLC_L3_HIGH_75_100
@@ -83,6 +128,21 @@ modes:
     status: fixed_for_hw_plc_run
     mirrored_vplc_mode_required: VPLC_L3_HIGH_75_100
 
+  - mode_id: VPLC_L3_HIGH_75_100
+    class_id: VPLC_L3
+    comparison_pair_id: PLC_L3_HIGH_75_100
+    object: vPLC_container
+    scenario: workload_cycle_high
+    t0_ms: 75
+    deadline_threshold_ms: 100
+    load_level: 3
+    load_passes: 512
+    stress_flag: high
+    duration_s: 600
+    series_count: 3
+    purpose: "Зеркальная высокая workload-нагрузка VPLC с рабочим запасом по deadline."
+    status: planned_pending_vplc_workload_and_rawlogs_method
+
   - mode_id: S7_L3_STRESS_75_80
     class_id: S7_L3_STRESS
     comparison_pair_id: PLC_L3_STRESS_75_80
@@ -98,6 +158,21 @@ modes:
     purpose: "Предельный stress-режим аппаратного PLC на той же высокой нагрузке, но с более жёстким deadline."
     status: fixed_for_hw_plc_run
     mirrored_vplc_mode_required: VPLC_L3_STRESS_75_80
+
+  - mode_id: VPLC_L3_STRESS_75_80
+    class_id: VPLC_L3_STRESS
+    comparison_pair_id: PLC_L3_STRESS_75_80
+    object: vPLC_container
+    scenario: workload_cycle_high
+    t0_ms: 75
+    deadline_threshold_ms: 80
+    load_level: 3
+    load_passes: 512
+    stress_flag: stress
+    duration_s: 600
+    series_count: 3
+    purpose: "Зеркальный предельный stress-режим VPLC."
+    status: planned_pending_vplc_workload_and_rawlogs_method
 
 notes:
   - "Режимы S7_* зафиксированы для ближайшего HW PLC S7-1200 съёма RawLogs."

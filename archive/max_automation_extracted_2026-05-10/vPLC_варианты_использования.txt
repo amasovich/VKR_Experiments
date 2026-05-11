@@ -1,0 +1,129 @@
+JetHome/gАVPLC
+Wiren Board 8/gАVPLC + I/O модуль
+Вариант 4
+Вариант 5
+Вариант 3
+Вариант 7
+Вариант 6
+Вариант 9
+Вариант 10
+Вариант 8
+Mini-PC/gАVPLC Server
+Server-PC/gАVPLC, VPLC Server
+Холодильник LG/gАна базе Linux/gАVPLC
+Wifi Роутер/gА 
+на базе Linux/gАVPLC Server
+SCADA + VPLC Studio
+SCADA
+SCADA
+SCADA
+VPLC Studio
+VPLC Studio
+Локально
+Локально
+Использование маломощного компьютера 
+(Mini-PC) в качестве VPLC Server для 
+обработки небольшого количества I/O-
+модулей. Подходит для небольших систем 
+автоматизации и локальных объектов.
+Локально
+Mini-PC/gАVPLC
+УМКА/gАI/O Модуль
+Вариант 1
+Локально
+Удалённо
+OPC UA
+OPC UA
+Работает на любом оборудовании с 
+Linux: Wiren Board, Raspberry Pi, 
+Mini-PC, серверы и одноплатные 
+компьютеры.
+VPLC/gАCloud
+ VPLC Server SCADA VPLC Studio
+OPC UA
+OPC UA
+ VPLC Server SCADA
+Modbus TCP Modbus TCP
+Modbus TCP
+Modbus TCP
+Modbus TCP
+Modbus TCP
+Modbus TCP
+Modbus TCP
+Modbus TCP
+Mini-PC/gАVPLC
+Segnetics 
+Segnetics/gАI/O модуль 
+Щит с УМКА/gАI/O Модули
+Mini-PC/gАVPLC
+Щит с УМКА/gАI/O Модули
+Raspberry Pi/gАVPLC Server
+Удалённо
+SCADA + VPLC Server
+VPLC Studio
+УМКА/gАI/O модуль
+ICP CON/gАI/O модуль
+ICP CON/gАI/O модуль
+ОВЕН/gАI/O модуль
+ODOT/gАI/O модуль
+Вариант 2
+Локально
+Все программные компоненты системы 
+(VPLC, VPLC Server, VPLC Studio и SCADA) 
+могут быть развернуты на одном 
+компьютере, что позволяет создать 
+полностью функционирующую систему 
+автоматизации без дополнительного 
+оборудования.
+Mini-PC выполняет функции 
+программируемого контроллера и 
+сервера данных. Обмен с I/O-
+модулями осуществляется по 
+протоколу Modbus TCP.
+Подключение осуществляется через 
+облачную инфраструктуру VPLC Cloud, 
+что позволяет осуществлять удалённое 
+управление и мониторинг объекта из 
+любой точки сети.
+VPLC, VPLC Server, VPLC Studio, Scada
+I/O модули
+Modbus TCP
+Modbus TCP
+Использование серверного 
+оборудования для размещения 
+VPLC и VPLC Server, 
+обеспечивающее стабильную 
+работу и обработку большого 
+количества I/O-модулей.
+VPLC может работать на различных устройствах под 
+управлением Linux, включая бытовую технику. Данный 
+вариант демонстрирует гибкость программного 
+обеспечения и возможность его запуска на нестандартных 
+платформах. (шуточный вариант)
+OPC UA
+OPC UA
+OPC UA
+OPC UA
+ODOT/gАI/O модуль
+ОВЕН/gАI/O модуль
+Mini-PC/gАVPLC, VPLC Server
+SCADAVPLC Studio
+VPLC Studio
+ICP CON/gАI/O модуль
+ODOT/gАI/O модуль
+SystemePLC /gАI/O модульMini-PC/gАVPLC
+Локально
+Управляемая вентиляция
+Управляемое отполение
+Удалённо
+Локально
+Локально
+Локально
+Локально
+ VPLC Server 
+Удалённо SCADASCADASCADA
+SCADASCADASCADA
+Mini-PC/gАVPLC
+VPLC/gАCloud
+VPLC/gАCloud
+VPLC/gАCloud

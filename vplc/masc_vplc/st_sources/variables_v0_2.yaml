@@ -1,0 +1,111 @@
+profile_id: VPLC_WorkloadVariables_v0_2
+status: draft_for_vplc_studio_manual_entry
+related_workload_profile: "configs\\workload_profile_v0.yaml"
+related_st_source: "vplc\\masc_vplc\\st_sources\\VPLC_WorkloadCycle_v0_2.st"
+
+notes:
+  - "Use external variables for parameters and observed outputs that must be visible in VPLC Studio/CLI."
+  - "Internal state arrays may be internal if VPLC Studio supports ARRAY variables for ST tasks."
+  - "If ARRAY variables do not compile in VPLC Studio, use the fallback numbered-variable variant that must preserve the same update order."
+
+external_variables:
+  - { name: cycle_counter, type: UDINT, initial: 0, role: observed }
+  - { name: heartbeat, type: BOOL, initial: false, role: observed }
+  - { name: heartbeat_divider, type: UDINT, initial: 0, role: observed }
+  - { name: workload_accumulator, type: UDINT, initial: 0, role: observed }
+  - { name: init_done, type: BOOL, initial: false, role: init_control }
+  - { name: load_level, type: UINT, initial: 0, role: mode_parameter }
+  - { name: load_level_effective, type: UINT, initial: 0, role: observed }
+  - { name: load_passes, type: UINT, initial: 0, role: internal_observed }
+  - { name: load_passes_effective, type: UINT, initial: 0, role: observed }
+  - { name: error_flag, type: BOOL, initial: false, role: observed }
+  - { name: T0_ms, type: REAL, initial: 10.0, role: mode_parameter_metadata }
+  - { name: deadline_threshold_ms, type: REAL, initial: 20.0, role: mode_parameter_metadata }
+  - { name: load_passes_level1, type: UINT, initial: 32, role: workload_parameter }
+  - { name: load_passes_level2, type: UINT, initial: 128, role: workload_parameter }
+  - { name: load_passes_level3, type: UINT, initial: 512, role: workload_parameter }
+  - { name: max_load_passes, type: UINT, initial: 512, role: workload_parameter }
+  - { name: heartbeat_divisor_cycles, type: UDINT, initial: 100, role: workload_parameter }
+  - { name: accumulator_modulus, type: UDINT, initial: 2147483647, role: workload_parameter }
+
+internal_variables:
+  - { name: effective_load_level, type: UINT, initial: 0 }
+  - { name: i, type: INT, initial: 0 }
+  - { name: p, type: INT, initial: 0 }
+  - { name: divisor_two, type: UDINT, initial: 2 }
+  - { name: tmp_quotient, type: UDINT, initial: 0 }
+  - { name: tmp_modulo, type: UDINT, initial: 0 }
+  - { name: int_state, type: "ARRAY[0..15] OF UDINT", initial: 0 }
+  - { name: bool_state, type: "ARRAY[0..15] OF BOOL", initial: false }
+
+fallback_numbered_internal_variables:
+  int_state:
+    type: UDINT
+    names:
+      - int_state_0
+      - int_state_1
+      - int_state_2
+      - int_state_3
+      - int_state_4
+      - int_state_5
+      - int_state_6
+      - int_state_7
+      - int_state_8
+      - int_state_9
+      - int_state_10
+      - int_state_11
+      - int_state_12
+      - int_state_13
+      - int_state_14
+      - int_state_15
+  bool_state:
+    type: BOOL
+    names:
+      - bool_state_0
+      - bool_state_1
+      - bool_state_2
+      - bool_state_3
+      - bool_state_4
+      - bool_state_5
+      - bool_state_6
+      - bool_state_7
+      - bool_state_8
+      - bool_state_9
+      - bool_state_10
+      - bool_state_11
+      - bool_state_12
+      - bool_state_13
+      - bool_state_14
+      - bool_state_15
+
+fixed_modes:
+  - mode_id: VPLC_L0_IDLE_10_20
+    mirrors: S7_L0_IDLE_10_20
+    load_level: 0
+    load_passes: 0
+    T0_ms: 10
+    deadline_threshold_ms: 20
+  - mode_id: VPLC_L1_LIGHT_10_20
+    mirrors: S7_L1_LIGHT_10_20
+    load_level: 1
+    load_passes: 32
+    T0_ms: 10
+    deadline_threshold_ms: 20
+  - mode_id: VPLC_L2_MEDIUM_25_35
+    mirrors: S7_L2_MEDIUM_25_35
+    load_level: 2
+    load_passes: 128
+    T0_ms: 25
+    deadline_threshold_ms: 35
+  - mode_id: VPLC_L3_HIGH_75_100
+    mirrors: S7_L3_HIGH_75_100
+    load_level: 3
+    load_passes: 512
+    T0_ms: 75
+    deadline_threshold_ms: 100
+  - mode_id: VPLC_L3_STRESS_75_80
+    mirrors: S7_L3_STRESS_75_80
+    load_level: 3
+    load_passes: 512
+    T0_ms: 75
+    deadline_threshold_ms: 80

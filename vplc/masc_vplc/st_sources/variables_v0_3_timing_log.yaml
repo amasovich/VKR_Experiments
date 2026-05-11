@@ -1,0 +1,94 @@
+profile_id: VPLC_WorkloadVariables_v0_3_timing_log
+status: draft_for_vplc_studio_manual_entry
+related_workload_profile: "configs\\workload_profile_v0.yaml"
+related_st_source: "vplc\\masc_vplc\\st_sources\\VPLC_WorkloadCycle_v0_3_timing_log.st"
+
+purpose:
+  - "Mirror Siemens workload semantics on VPLC."
+  - "Use _milliseconds_from_start_ as internal ST timing source."
+  - "Store 1000 recent rows in array-based ring buffer for dump-based RawLogs extraction."
+
+documentation_basis:
+  source_pdf: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\00 - Ресёрч\\02_Источники ВКР\\MAX Automation\\documentation\\v0.5_Функции_MASC_ВПЛК.pdf"
+  timing_source:
+    name: "_milliseconds_from_start_"
+    type: LREAL
+    description_ru: "Количество миллисекунд от запуска ВПЛК"
+
+external_variables:
+  - { name: init_done, type: BOOL, initial: false, role: init_control }
+  - { name: reset_log_request, type: BOOL, initial: false, role: operator_control }
+  - { name: freeze_logging, type: BOOL, initial: false, role: operator_control }
+  - { name: cycle_counter, type: UDINT, initial: 0, role: observed }
+  - { name: heartbeat, type: BOOL, initial: false, role: observed }
+  - { name: heartbeat_divider, type: UDINT, initial: 0, role: observed }
+  - { name: workload_accumulator, type: UDINT, initial: 0, role: observed }
+  - { name: load_level, type: UINT, initial: 0, role: mode_parameter }
+  - { name: load_level_effective, type: UINT, initial: 0, role: observed }
+  - { name: load_passes, type: UINT, initial: 0, role: internal_observed }
+  - { name: load_passes_effective, type: UINT, initial: 0, role: observed }
+  - { name: error_flag, type: BOOL, initial: false, role: observed }
+  - { name: T0_ms, type: REAL, initial: 10.0, role: mode_parameter_metadata }
+  - { name: deadline_threshold_ms, type: REAL, initial: 20.0, role: mode_parameter_metadata }
+  - { name: max_valid_tper_ms, type: REAL, initial: 1000.0, role: timing_quality_parameter }
+  - { name: now_ms, type: LREAL, initial: 0.0, role: timing_observed }
+  - { name: prev_ms, type: LREAL, initial: 0.0, role: timing_state }
+  - { name: Tper_ms, type: LREAL, initial: 0.0, role: timing_metric }
+  - { name: Jper_ms, type: LREAL, initial: 0.0, role: timing_metric }
+  - { name: timing_first_cycle, type: BOOL, initial: true, role: timing_state }
+  - { name: timing_valid, type: BOOL, initial: false, role: timing_quality }
+  - { name: deadline_miss, type: BOOL, initial: false, role: timing_metric }
+  - { name: timing_quality_flag, type: UINT, initial: 1, role: timing_quality }
+  - { name: quality_flag, type: UINT, initial: 1, role: row_quality }
+  - { name: load_passes_level1, type: UINT, initial: 32, role: workload_parameter }
+  - { name: load_passes_level2, type: UINT, initial: 128, role: workload_parameter }
+  - { name: load_passes_level3, type: UINT, initial: 512, role: workload_parameter }
+  - { name: max_load_passes, type: UINT, initial: 512, role: workload_parameter }
+  - { name: heartbeat_divisor_cycles, type: UDINT, initial: 100, role: workload_parameter }
+  - { name: accumulator_modulus, type: UDINT, initial: 2147483647, role: workload_parameter }
+  - { name: sample_index, type: UDINT, initial: 0, role: log_state }
+  - { name: write_index, type: UDINT, initial: 0, role: log_state }
+  - { name: log_capacity, type: UDINT, initial: 1000, role: log_parameter }
+  - { name: buffer_wrapped, type: BOOL, initial: false, role: log_state }
+
+log_arrays:
+  length: 1000
+  variables:
+    - { name: log_sample_index, type: "ARRAY[0..999] OF UDINT" }
+    - { name: log_cycle_counter, type: "ARRAY[0..999] OF UDINT" }
+    - { name: log_now_ms, type: "ARRAY[0..999] OF LREAL" }
+    - { name: log_Tper_ms, type: "ARRAY[0..999] OF LREAL" }
+    - { name: log_Jper_ms, type: "ARRAY[0..999] OF LREAL" }
+    - { name: log_deadline_miss, type: "ARRAY[0..999] OF BOOL" }
+    - { name: log_timing_valid, type: "ARRAY[0..999] OF BOOL" }
+    - { name: log_heartbeat, type: "ARRAY[0..999] OF BOOL" }
+    - { name: log_workload_accumulator, type: "ARRAY[0..999] OF UDINT" }
+    - { name: log_load_level, type: "ARRAY[0..999] OF UINT" }
+    - { name: log_load_passes, type: "ARRAY[0..999] OF UINT" }
+    - { name: log_error_flag, type: "ARRAY[0..999] OF BOOL" }
+    - { name: log_quality_flag, type: "ARRAY[0..999] OF UINT" }
+
+internal_variables:
+  - { name: effective_load_level, type: UINT, initial: 0 }
+  - { name: i, type: INT, initial: 0 }
+  - { name: p, type: INT, initial: 0 }
+  - { name: log_idx, type: INT, initial: 0 }
+  - { name: divisor_two, type: UDINT, initial: 2 }
+  - { name: tmp_quotient, type: UDINT, initial: 0 }
+  - { name: tmp_modulo, type: UDINT, initial: 0 }
+  - { name: int_state, type: "ARRAY[0..15] OF UDINT", initial: 0 }
+  - { name: bool_state, type: "ARRAY[0..15] OF BOOL", initial: false }
+
+quality_flags:
+  - { value: 0, meaning: ok }
+  - { value: 1, meaning: first_cycle }
+  - { value: 2, meaning: invalid_timing_delta }
+  - { value: 3, meaning: invalid_load_level }
+
+operator_snapshot_procedure:
+  - "Set reset_log_request := TRUE."
+  - "Wait until reset_log_request returns FALSE."
+  - "Set mode parameters: load_level, T0_ms, deadline_threshold_ms."
+  - "Wait until buffer_wrapped = TRUE or sample_index >= 1000."
+  - "Set freeze_logging := TRUE."
+  - "Download VPLC dump files and convert dump arrays to RawLogs CSV."

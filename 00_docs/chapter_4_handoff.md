@@ -20,6 +20,7 @@
 | Группа | Путь | Как использовать |
 |---|---|---|
 | Индекс артефактов | `00_docs\chapter_4_artifact_index.md` | карта всех файлов главы |
+| EventJournal | `event_journal\event_journal.csv` | машинно-читаемый журнал событий по таблице А.4 методики |
 | Протокол выполнения | `00_docs\chapter_4_run_protocol_summary.md` | основа для подраздела о порядке эксперимента |
 | Интерпретация | `00_docs\chapter_4_cause_interpretation.md` | основа для анализа результатов |
 | Рекомендации | `00_docs\chapter_4_engineering_recommendations.md` | основа для инженерных выводов |

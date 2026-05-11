@@ -212,6 +212,23 @@ columns:
     nullable: true
     type: string
     description: "Machine-generated service note. Raw rows must not be manually edited."
+  - name: cycle_exec_ms
+    required: false
+    nullable: true
+    type: number
+    units: ms
+    description: "VPLC runtime status field 'Длительность цикла (ms)' left part. This is not treated as Tper unless vendor semantics are confirmed."
+  - name: cycle_nominal_ms
+    required: false
+    nullable: true
+    type: number
+    units: ms
+    description: "VPLC runtime status field 'Длительность цикла (ms)' right part, normally project cycleDuration."
+  - name: program_status
+    required: false
+    nullable: true
+    type: string
+    description: "Program status parsed from VPLC runtime status output."
 
 processing_policy:
   - "RawLogs are immutable after collection."

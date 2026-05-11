@@ -1,0 +1,42 @@
+profile_id: VPLC_TimingProbeVariables_v0_3
+status: tech_probe_for_vplc_studio_manual_entry
+related_st_source: "vplc\\masc_vplc\\st_sources\\VPLC_TimingProbe_v0_3.st"
+
+purpose:
+  - "Check documented VPLC system variable _milliseconds_from_start_ inside ST code."
+  - "Confirm whether VPLC can calculate Tper/Jper/deadline_miss internally."
+  - "This probe is not the final workload and does not replace VPLC_WorkloadCycle_v0_2.st."
+
+documentation_basis:
+  source_pdf: "D:\\HOME_BASE\\HOME_BASE\\ВКР_МИФИ\\00 - Ресёрч\\02_Источники ВКР\\MAX Automation\\documentation\\v0.5_Функции_MASC_ВПЛК.pdf"
+  extracted_text: "archive\\max_automation_extracted_2026-05-10\\v0.5_Функции_MASC_ВПЛК.txt"
+  system_variable:
+    name: "_milliseconds_from_start_"
+    type: LREAL
+    description_ru: "Количество миллисекунд от запуска ВПЛК"
+
+external_variables:
+  - { name: timing_probe_init_done, type: BOOL, initial: false, role: init_control }
+  - { name: timing_first_cycle, type: BOOL, initial: true, role: timing_state }
+  - { name: cycle_counter, type: UDINT, initial: 0, role: observed }
+  - { name: now_ms, type: LREAL, initial: 0.0, role: observed_timing }
+  - { name: prev_ms, type: LREAL, initial: 0.0, role: timing_state }
+  - { name: Tper_ms, type: LREAL, initial: 0.0, role: timing_metric }
+  - { name: Jper_ms, type: LREAL, initial: 0.0, role: timing_metric }
+  - { name: timing_valid, type: BOOL, initial: false, role: timing_quality }
+  - { name: deadline_miss, type: BOOL, initial: false, role: timing_metric }
+  - { name: timing_quality_flag, type: UINT, initial: 1, role: timing_quality }
+  - { name: T0_ms, type: REAL, initial: 10.0, role: mode_parameter_metadata }
+  - { name: deadline_threshold_ms, type: REAL, initial: 20.0, role: mode_parameter_metadata }
+  - { name: max_valid_tper_ms, type: REAL, initial: 1000.0, role: timing_quality_parameter }
+
+quality_flags:
+  - { value: 0, meaning: ok }
+  - { value: 1, meaning: first_cycle }
+  - { value: 2, meaning: invalid_timing_delta }
+
+expected_check:
+  - "Build in VPLC Studio with the listed external variables."
+  - "Run with cycleDuration=100 ms first."
+  - "Observe now_ms increasing and Tper_ms close to the configured cycle duration."
+  - "If build fails on _milliseconds_from_start_, ask vendor for exact syntax/use scope."
